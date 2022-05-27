@@ -19,7 +19,7 @@
     <div class="pokedex">
       <div v-for="(pokemon, index) in pokedex" v-bind:key="index" :class="{ 'pokemon': true, 'active': pokemon.active }">
         <img :src="'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/' + (index + 1) + '.png'" />
-        <h2>{{('000'+(index+1)).slice(-3)}} {{ pokemon.name }}</h2>
+        <h2>{{('000'+(index+1)).slice(-3)}}<br />{{ pokemon.name }}</h2>
       </div>
     </div>
   </div>
