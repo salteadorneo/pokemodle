@@ -22,6 +22,51 @@
         <h2>{{('000'+(index+1)).slice(-3)}}<br />{{ pokemon.name }}</h2>
       </div>
     </div>
+
+    <div class="keyboard">
+      <div>
+        <div class="keyrow">
+          <button type="button" class="key" aria-label="q">q</button>
+          <button type="button" class="key" aria-label="w">w</button>
+          <button type="button" class="key" aria-label="e">e</button>
+          <button type="button" class="key" aria-label="r">r</button>
+          <button type="button" class="key" aria-label="t">t</button>
+          <button type="button" class="key" aria-label="y">y</button>
+          <button type="button" class="key" aria-label="u">u</button>
+          <button type="button" class="key" aria-label="i">i</button>
+          <button type="button" class="key" aria-label="o">o</button>
+          <button type="button" class="key" aria-label="p">p</button>
+        </div>
+        <div class="keyrow">
+          <button type="button" class="key" aria-label="a">a</button>
+          <button type="button" class="key" aria-label="s">s</button>
+          <button type="button" class="key" aria-label="d">d</button>
+          <button type="button" class="key" aria-label="f">f</button>
+          <button type="button" class="key" aria-label="g">g</button>
+          <button type="button" class="key" aria-label="h">h</button>
+          <button type="button" class="key" aria-label="j">j</button>
+          <button type="button" class="key" aria-label="k">k</button>
+          <button type="button" class="key" aria-label="l">l</button>
+          <button type="button" class="key" aria-label="ñ">ñ</button>
+        </div>
+        <div class="keyrow">
+          <button type="button" class="key" aria-label="enviar">enviar</button>
+          <button type="button" class="key" aria-label="z">z</button>
+          <button type="button" class="key" aria-label="x">x</button>
+          <button type="button" class="key" aria-label="c">c</button>
+          <button type="button" class="key" aria-label="v">v</button>
+          <button type="button" class="key" aria-label="b">b</button>
+          <button type="button" class="key" aria-label="n">n</button>
+          <button type="button" class="key" aria-label="m">m</button>
+          <button type="button" class="key" aria-label="borrar letra">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true" style="width:1.5rem;height:1.5rem">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -168,6 +213,27 @@ h3 {
       opacity: .01;
       transition: all 1s;
     }
+  }
+}
+
+.keyboard {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+
+  .key {
+    display: inline-block;
+    vertical-align: top;
+    color: white;
+    background: #333;
+    border-radius: 4px;
+    width: 45px;
+    height: 56px;
+    outline: none;
+    border: 0;
+    margin: 1px;
   }
 }
 </style>
