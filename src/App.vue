@@ -1,25 +1,34 @@
 <template>
   <div id="app">
-    <div class="scene" v-if="pokemon.id">
-      <img :src="'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/' + (pokemon.id) + '.png'" :class="{ 'pokemon': true, 'active': win }" />
-    </div>
-
-    <input v-model="input" placeholder="¿Qué Pokemon es?" readonly />
-
-    <br />
-    <h3>Intentos</h3>
-    <div class="pokeballs">
-      <img v-for="item in intents" v-bind:key="item" src="./assets/pokeball.png" class="pokeball" />
-    </div>
-
-    <br /><br /><br /><br />
-
-    <div class="pokedex">
+    <div :class="{ 'pokedex': true, 'active': showPokedex }">
+      <a href="#" @click.prevent="showPokedex = false" class="close">x</a>
       <div v-for="(pokemon, index) in pokedex" v-bind:key="index" :class="{ 'pokemon': true, 'active': pokemon.active }">
         <img :src="'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/' + (index + 1) + '.png'" />
         <h2>{{('000'+(index+1)).slice(-3)}}<br />{{ pokemon.name }}</h2>
       </div>
     </div>
+
+    <div class="scene" v-if="pokemon.id">
+      <img :src="'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/' + (pokemon.id) + '.png'" :class="{ 'pokemon': true, 'active': win }" />
+    </div>
+    <div class="flex" v-if="!win">
+      <div>
+        <input v-model="input" placeholder="¿Qué Pokemon es?" readonly />
+        <div v-if="input.length >= 2 && pokedex.filter(p => p.name.toLowerCase().indexOf(input.toLowerCase()) == 0).length > 0" class="autocomplete">
+          <ul>
+            <li v-for="(pokemon, index) in pokedex.filter(p => p.name.toLowerCase().indexOf(input.toLowerCase()) == 0)" v-bind:key="index" @click.prevent="input=pokemon.name">{{pokemon.name}}</li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <div class="pokeballs">
+          <img v-for="item in intents" v-bind:key="item" src="./assets/pokeball.png" class="pokeball" />
+        </div>
+      </div>
+    </div>
+
+    <br /><br />
+    <center><a href="#" @click.prevent="showPokedex = true">Completa la lista</a></center>
 
     <div class="keyboard">
       <div class="keyrow">
@@ -47,7 +56,7 @@
         <button type="button" class="key" @click="setKey('ñ')">ñ</button>
       </div>
       <div class="keyrow">
-        <button type="button" class="key" @click="setKey('enter')">enviar</button>
+        <button type="button" class="key" @click="setKey('enter')"><span style=font-size:22px>✓</span></button>
         <button type="button" class="key" @click="setKey('z')">z</button>
         <button type="button" class="key" @click="setKey('x')">x</button>
         <button type="button" class="key" @click="setKey('c')">c</button>
@@ -68,15 +77,17 @@
 
 <script>
 import axios from 'axios'
+import moment from 'moment'
 export default {
   name: 'App',
   data() {
     return {
       pokedex: localStorage.pokedex ? JSON.parse(localStorage.pokedex) : [],
       pokemon: {},
-      intents: 5,
+      intents: localStorage.intents ? parseInt(localStorage.intents) : 5,
       win: false,
       input: '',
+      showPokedex: false
     }
   },
   computed: {
@@ -111,18 +122,29 @@ export default {
         this.checkPokemon(this.input)
       } else if (e.key === 'Backspace') {
         this.input = this.input.slice(0, -1)
-      } else {
+      } else if (e.key.match(/^[a-zA-Z]$/g)) {
         this.input += e.key
       }
     },
     randomPokemon() {
       this.win = false
-      this.intents = 5
+      this.intents = localStorage.intents ? parseInt(localStorage.intents) : 5
+      this.today = moment()
 
       let noActives = this.pokedex.filter(i => !i.active)
 
+      if (localStorage.pokemon) this.pokemon = JSON.parse(localStorage.pokemon)
+      console.log(this.pokemon.name)
+      if (this.pokemon && this.pokemon.date && moment(this.pokemon.date).isSame(this.today, 'day')) return
+
       this.pokemon = noActives[Math.floor(Math.random() * noActives.length)]
       this.pokemon.id = this.pokemon.url.split('/')[6]
+      this.pokemon.date = moment()
+      
+      this.intents = 5
+      localStorage.intents = this.intents
+
+      localStorage.pokemon = JSON.stringify(this.pokemon)
 
       console.log(this.pokemon.name)
     },
@@ -131,15 +153,18 @@ export default {
       return this.pokedex.filter(i => { return i.name.toLowerCase().startsWith(input.toLowerCase())}).map(i => { return i.name })
     },
     checkPokemon(e) {
+      if (!this.intents) return
       if (e.toLowerCase().trim() == this.pokemon.name.toLowerCase().trim()) {
         this.win = true
         this.pokemon.active = true
+        localStorage.removeItem('pokemon')
         localStorage.pokedex = JSON.stringify(this.pokedex)
       } else {
         this.intents--
       }
+      localStorage.intents = this.intents
       this.input = ''
-      if (this.intents == 0) location.reload()
+      //if (this.intents == 0) location.reload()
     }
   }
 }
@@ -148,10 +173,19 @@ export default {
 <style lang="scss">
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
 
+* {
+  box-sizing: border-box;
+}
+
 body {
   font-family: 'Roboto', sans-serif;
   padding: 0;
   margin: 0;
+  background: #db1516;
+}
+
+a {
+  color: white;
 }
 
 #app {
@@ -160,13 +194,9 @@ body {
   margin: 0 auto;
 }
 
-h3 {
-  display: inline;
-}
-
 .scene {
   width: 100%;
-  height: 40vw;
+  height: 100%;
   max-height: 475px;
   background: url(./assets/back.jpg) no-repeat center / cover;
   margin: 0 auto;
@@ -185,20 +215,66 @@ h3 {
   }
 }
 
-.pokeballs {
+.flex {
   display: flex;
+  align-items: flex-start;
+  margin: 5px auto 0;
 
-  .pokeball {
-    width: 50px;
+  & > div {
+    flex-basis: 50%;
   }
 }
 
 input {
   width: 100%;
-  line-height: 10vh;
+  padding: 10px;
+  outline: none;
+  appearance: none;
+  border: 1px solid gray;
+}
+
+.autocomplete {
+  background: white;
+  //color: white;
+
+  ul {
+    list-style: none;
+    padding: 2px 0;
+    margin: 0;
+
+    li {
+      font-size: 12px;
+      padding: 4px 12px;
+    }
+  }
+}
+
+.pokeballs {
+  display: flex;
+
+  .pokeball {
+    width: 40px;
+  }
+}
+
+.close {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 2;
+  color: white;
+  text-decoration: none;
+  font-size: 20px;
+  font-weight: 600;
+  padding: 5px 15px;
 }
 
 .pokedex {
+  position: fixed;
+  top: 0;
+  left: 100vw;
+  z-index: 2;
+  width: 100%;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -206,12 +282,34 @@ input {
   background: url(./assets/pokedex.png) no-repeat center top #ed1e24;
   background-size: contain;
   padding-top: 100px;
+  opacity: 0;
+  transition: left .5s, opacity .5s;
 
-  & > div {
+  &.active {
+    position: absolute;
+    left: 0;
+    opacity: 1;
+
+    & > div {
+      transform: translateY(0) !important;
+      opacity: 1;
+    }
+  }
+
+  .pokemon {
     flex-basis: 10%;
     font-size: 9px;
     text-align: center;
     color: white;
+    position: relative;
+    transition: all 1s;
+    opacity: 0;
+    
+    @for $i from 1 through 151 {
+      &:nth-of-type(#{$i}) {
+        transform: translateY($i * 100px);
+      }
+    }
 
     @media (max-width: 800px) {
       flex-basis: 20%;
@@ -234,8 +332,8 @@ input {
 
     img {
       max-width: 70%;
-      filter: brightness(0);
-      opacity: .01;
+      filter: brightness(0) invert(1);
+      opacity: .05;
       transition: all 1s;
     }
   }
@@ -250,6 +348,7 @@ input {
   max-width: 492px;
   max-height: 40vh;
   text-align: center;
+  padding: 0 4px 4px;
 
   .keyrow {
     display: flex;
@@ -257,7 +356,7 @@ input {
     width: 100%;
 
     .key {
-      flex: auto;
+      flex: 1 1 0px;
       color: white;
       background: #333;
       border-radius: 6px;
