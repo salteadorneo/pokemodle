@@ -1,5 +1,17 @@
 <template>
   <div id="app">
+    <button v-on:click="() => { this.helped = true }" class="help">?</button>
+    <div v-if="helped" class="popup" v-on:click="() => { this.helped = false }">
+      <div>
+        <button v-on:click="() => { this.helped = false }" class="close">x</button>
+        <h2 class="title">Cómo jugar</h2>
+        <p>Adivina el Pokémon oculto en cinco intentos.<br /><br />
+        ¡Uno nuevo cada día!</p>
+      </div>
+    </div>
+
+    <img src="./assets/logo.png" alt="Pokemodle" class="logo" />
+
     <div :class="{ 'pokedex': true, 'active': showPokedex }">
       <a href="#" @click.prevent="showPokedex = false" class="close">x</a>
       <div v-for="(pokemon, index) in pokedex" v-bind:key="index" :class="{ 'pokemon': true, 'active': pokemon.active }">
@@ -11,26 +23,27 @@
     <div class="scene" v-if="pokemon.id">
       <img :src="'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/' + (pokemon.id) + '.png'" :class="{ 'pokemon': true, 'active': win }" />
     </div>
-    <div class="flex" v-if="!win">
+
+    <div v-if="!win">
+
       <div>
-        <input v-model="input" placeholder="¿Qué Pokemon es?" readonly />
-        <div v-if="input.length >= 2 && pokedex.filter(p => p.name.toLowerCase().indexOf(input.toLowerCase()) == 0).length > 0" class="autocomplete">
-          <ul>
-            <li v-for="(pokemon, index) in pokedex.filter(p => p.name.toLowerCase().indexOf(input.toLowerCase()) == 0)" v-bind:key="index" @click.prevent="input=pokemon.name">{{pokemon.name}}</li>
-          </ul>
-        </div>
+        <input list="browsers" v-model="input" placeholder="¿Qué Pokemon es?" class="textInput" />
+        <datalist id="browsers" v-show="input|length > 1">
+          <option v-for="(pokemon, index) in pokedex" v-bind:key="index" :tabindex="index">{{pokemon.name}}</option>
+        </datalist>
       </div>
-      <div>
-        <div class="pokeballs">
-          <img v-for="item in intents" v-bind:key="item" src="./assets/pokeball.png" class="pokeball" />
-        </div>
+
+      <div class="pokeballs">
+        <img v-for="item in intents" v-bind:key="item" src="./assets/pokeball.png" class="pokeball" />
+        <!-- <img v-for="item in 5 - intents|length" v-bind:key="item" src="./assets/pokeball.png" class="pokeball disabled" /> -->
       </div>
+        
     </div>
 
     <br /><br />
     <center><a href="#" @click.prevent="showPokedex = true">Completa la lista</a></center>
 
-    <div class="keyboard">
+    <div class="keyboard" v-if="aa">
       <div class="keyrow">
         <button type="button" class="key" @click="setKey('q')">q</button>
         <button type="button" class="key" @click="setKey('w')">w</button>
@@ -87,7 +100,8 @@ export default {
       intents: localStorage.intents ? parseInt(localStorage.intents) : 5,
       win: false,
       input: '',
-      showPokedex: false
+      showPokedex: false,
+      helped: false
     }
   },
   computed: {
@@ -108,9 +122,12 @@ export default {
      document.body.addEventListener("keyup", this.keyup) 
   },
   methods: {
+    closePopup() {
+      this.helped = false
+    },
     setKey(v) {
       if (v === 'enter') {
-        this.checkPokemon(this.input)
+        this.checkPokemon()
       } else if (v === 'return') {
         this.input = this.input.slice(0, -1)
       } else {
@@ -119,7 +136,7 @@ export default {
     },
     keyup(e) {
       if (e.key === 'Enter') {
-        this.checkPokemon(this.input)
+        this.checkPokemon()
       } else if (e.key === 'Backspace') {
         this.input = this.input.slice(0, -1)
       } else if (e.key.match(/^[a-zA-Z]$/g)) {
@@ -152,9 +169,9 @@ export default {
       if (input.length < 1) { return [] }
       return this.pokedex.filter(i => { return i.name.toLowerCase().startsWith(input.toLowerCase())}).map(i => { return i.name })
     },
-    checkPokemon(e) {
+    checkPokemon() {
       if (!this.intents) return
-      if (e.toLowerCase().trim() == this.pokemon.name.toLowerCase().trim()) {
+      if (this.input.toLowerCase().trim() == this.pokemon.name.toLowerCase().trim()) {
         this.win = true
         this.pokemon.active = true
         localStorage.removeItem('pokemon')
@@ -164,7 +181,6 @@ export default {
       }
       localStorage.intents = this.intents
       this.input = ''
-      //if (this.intents == 0) location.reload()
     }
   }
 }
@@ -181,7 +197,7 @@ body {
   font-family: 'Roboto', sans-serif;
   padding: 0;
   margin: 0;
-  background: #db1516;
+  background: #f5f5f5;
 }
 
 a {
@@ -194,17 +210,74 @@ a {
   margin: 0 auto;
 }
 
+.help {
+  position: fixed;
+  top: 5px;
+  left: 5px;
+  background: gray;
+  border-radius: 50%;
+  width: 26px;
+  font-size: 16px;
+  line-height: 26px;
+  color: white;
+  border: none;
+  appearance: none;
+  text-align: center;
+  padding: 0;
+}
+
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 10;
+  background: #00000080;
+
+  & > div {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    background: #fff;
+    border-radius: 5px;
+    padding: 20px;
+    width: 85%;
+    max-width: 300px;
+    text-align: center;
+
+    .close {
+      background: none;
+      border: none;
+      appearance: none;
+      color: #000;
+    }
+
+    .title {
+      text-align: center;
+      margin: 0 auto;
+    }
+  }
+}
+
+.logo {
+  display: block;
+  max-width: 80%;
+  max-height: 120px;
+  margin: 20px auto 0;
+}
+
 .scene {
   width: 100%;
   height: 100%;
   max-height: 475px;
-  background: url(./assets/back.jpg) no-repeat center / cover;
   margin: 0 auto;
+  text-align: center;
 
   .pokemon {
     position: relative;
-    top: 3%;
-    left: 5%;
     max-width: 50%;
     filter: brightness(0);
     transition: all 1s;
@@ -215,45 +288,55 @@ a {
   }
 }
 
-.flex {
-  display: flex;
-  align-items: flex-start;
-  margin: 5px auto 0;
-
-  & > div {
-    flex-basis: 50%;
-  }
-}
-
-input {
-  width: 100%;
-  padding: 10px;
+.textInput {
+  display: block;
+  width: 250px;
+  margin: 0 auto;
+  padding: 12px;
   outline: none;
   appearance: none;
   border: 1px solid gray;
-}
-
-.autocomplete {
-  background: white;
-  //color: white;
-
-  ul {
-    list-style: none;
-    padding: 2px 0;
-    margin: 0;
-
-    li {
-      font-size: 12px;
-      padding: 4px 12px;
-    }
-  }
+  text-align: center;
 }
 
 .pokeballs {
   display: flex;
+  justify-content: center;
+  margin: 10px auto 0;
 
   .pokeball {
     width: 40px;
+
+    &.disabled {
+      opacity: .3;
+    }
+  }
+}
+
+.autocomplete {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  width: 250px;
+  margin: 0 auto;
+  z-index: 10;
+
+  datalist2 {
+    display: block;
+    list-style: none;
+    padding: 2px 0;
+    margin: 0;
+
+    option {
+      font-size: 14px;
+      color: black;
+      padding: 6px 12px;
+      border: none;
+      appearance: none;
+      width: 100%;
+      border-radius: none;
+    }
   }
 }
 
