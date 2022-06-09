@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <button v-on:click="() => { this.helped = true }" class="help">?</button>
-    <div v-if="helped" class="popup" v-on:click="() => { this.helped = false }">
+    <div v-if="helped" class="popup active" v-on:click="() => { this.helped = false }">
       <div>
         <button v-on:click="() => { this.helped = false }" class="close">x</button>
         <h2 class="title">Cómo jugar</h2>
@@ -13,7 +13,7 @@
     <img src="./assets/logo.png" alt="Pokemodle" class="logo" />
 
     <div :class="{ 'pokedex': true, 'active': showPokedex }">
-      <a href="#" @click.prevent="showPokedex = false" class="close">x</a>
+      <button @click="showPokedex = false" class="close">x</button>
       <div v-for="(pokemon, index) in pokedex" v-bind:key="index" :class="{ 'pokemon': true, 'active': pokemon.active }">
         <img :src="'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/' + (index + 1) + '.png'" />
         <h2>{{('000'+(index+1)).slice(-3)}}<br />{{ pokemon.name }}</h2>
@@ -26,9 +26,9 @@
 
     <div v-if="!win">
 
-      <div>
-        <input list="browsers" v-model="input" placeholder="¿Qué Pokemon es?" class="textInput" />
-        <datalist id="browsers" v-show="input|length > 1">
+      <div v-if="intents">
+        <input list="browsers" v-model="input" placeholder="¿Qué Pokemon es?" class="textInput" @blur="checkPokemon" />
+        <datalist id="browsers" v-show="input && input.length > 1">
           <option v-for="(pokemon, index) in pokedex" v-bind:key="index" :tabindex="index">{{pokemon.name}}</option>
         </datalist>
       </div>
@@ -40,10 +40,26 @@
         
     </div>
 
-    <br /><br />
-    <center><a href="#" @click.prevent="showPokedex = true">Completa la lista</a></center>
+    <div v-if="win && !showPokedex" :class="{'popup active': win}" v-on:click="showPokedex = true">
+      <div>
+        <h2 class="title">¡Enhorabuena!</h2>
+        <p>Has atrapado tu Pokémon diario.</p>
+        <button @click="showPokedex=true">Consulta tu lista</button>
+      </div>
+    </div>
 
-    <div class="keyboard" v-if="aa">
+    <div v-if="!win && !intents && !showPokedex" :class="{'popup active': !win}" v-on:click="showPokedex = true">
+      <div>
+        <h2 class="title">¡Se te ha escapado!</h2>
+        <p>Vuelve mañana para encontrar otro.</p>
+        <button @click="showPokedex=true">Consulta tu lista</button>
+      </div>
+    </div>
+
+    <br /><br />
+    <center><button @click.prevent="showPokedex = true">Completa la lista</button></center>
+
+    <div class="keyboard" v-if="false">
       <div class="keyrow">
         <button type="button" class="key" @click="setKey('q')">q</button>
         <button type="button" class="key" @click="setKey('w')">w</button>
@@ -115,16 +131,39 @@ export default {
 
         localStorage.pokedex = JSON.stringify(this.pokedex)
 
+        this.helped = true
+
         this.randomPokemon()
       })
     } else this.randomPokemon()
 
-     document.body.addEventListener("keyup", this.keyup) 
+    //  document.body.addEventListener("keyup", this.keyup) 
+
+    // document.querySelector(".pokedex").addEventListener('touchmove', this.touchMove, false);
+    // document.querySelector(".pokedex").addEventListener('touchend', this.touchEnd, false);
+    
   },
   methods: {
     closePopup() {
       this.helped = false
     },
+    // touchMove(e) {
+    //   e.preventDefault();
+    //   var dragElem = e.target;
+    //   var touch = e.touches[0];
+    //   // var positionX = touch.pageX;
+    //   var positionY = touch.pageY;
+
+    //   // dragElem.style.left = positionX - anchor.left + 'px';
+    //   dragElem.style.top = positionY + 'px';
+    // },
+    // touchEnd(e) {
+    //   e.preventDefault();
+    //   var dragElem = e.target;
+
+    //   if (parseInt(dragElem.style.top) > 150) this.showPokedex = false
+    //   dragElem.removeAttribute("style")
+    // },
     setKey(v) {
       if (v === 'enter') {
         this.checkPokemon()
@@ -135,6 +174,7 @@ export default {
       }
     },
     keyup(e) {
+      if (!e.key) return
       if (e.key === 'Enter') {
         this.checkPokemon()
       } else if (e.key === 'Backspace') {
@@ -152,7 +192,10 @@ export default {
 
       if (localStorage.pokemon) this.pokemon = JSON.parse(localStorage.pokemon)
       console.log(this.pokemon.name)
-      if (this.pokemon && this.pokemon.date && moment(this.pokemon.date).isSame(this.today, 'day')) return
+      if (this.pokemon && this.pokemon.date && moment(this.pokemon.date).isSame(this.today, 'day')) {
+        this.win = this.pokemon.active
+        return
+      }
 
       this.pokemon = noActives[Math.floor(Math.random() * noActives.length)]
       this.pokemon.id = this.pokemon.url.split('/')[6]
@@ -165,16 +208,17 @@ export default {
 
       console.log(this.pokemon.name)
     },
-    search(input) {
-      if (input.length < 1) { return [] }
-      return this.pokedex.filter(i => { return i.name.toLowerCase().startsWith(input.toLowerCase())}).map(i => { return i.name })
-    },
+    // search(input) {
+    //   if (input.length < 1) { return [] }
+    //   return this.pokedex.filter(i => { return i.name.toLowerCase().startsWith(input.toLowerCase())}).map(i => { return i.name })
+    // },
     checkPokemon() {
       if (!this.intents) return
       if (this.input.toLowerCase().trim() == this.pokemon.name.toLowerCase().trim()) {
         this.win = true
         this.pokemon.active = true
-        localStorage.removeItem('pokemon')
+        // localStorage.removeItem('pokemon')
+        localStorage.pokemon = JSON.stringify(this.pokemon)
         localStorage.pokedex = JSON.stringify(this.pokedex)
       } else {
         this.intents--
@@ -189,7 +233,7 @@ export default {
 <style lang="scss">
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
 
-* {
+html {
   box-sizing: border-box;
 }
 
@@ -233,7 +277,13 @@ a {
   bottom: 0;
   right: 0;
   z-index: 10;
-  background: #00000080;
+  background: #00000050;
+  opacity: 0;
+  transition: all 1s;
+
+  &.active {
+    opacity: 1;
+  }
 
   & > div {
     position: absolute;
@@ -347,30 +397,34 @@ a {
   z-index: 2;
   color: white;
   text-decoration: none;
-  font-size: 20px;
+  font-size: 28px;
   font-weight: 600;
   padding: 5px 15px;
+  background: none;
+  appearance: none;
+  border: 0;
 }
 
 .pokedex {
   position: fixed;
-  top: 0;
-  left: 100vw;
+  top: 100vh;
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 2;
   width: 100%;
+  max-width: 500px;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   align-items: flex-end;
-  background: url(./assets/pokedex.png) no-repeat center top #ed1e24;
-  background-size: contain;
-  padding-top: 100px;
+  background: url(./assets/pokedex.png) no-repeat left top #ed1e24;
+  padding-top: 140px;
   opacity: 0;
-  transition: left .5s, opacity .5s;
+  transition: top .5s, opacity .5s;
 
   &.active {
     position: absolute;
-    left: 0;
+    top: 0;
     opacity: 1;
 
     & > div {
@@ -380,7 +434,7 @@ a {
   }
 
   .pokemon {
-    flex-basis: 10%;
+    flex-basis: 25%;
     font-size: 9px;
     text-align: center;
     color: white;
@@ -395,11 +449,9 @@ a {
     }
 
     @media (max-width: 800px) {
-      flex-basis: 20%;
     }
 
     @media (max-width: 680px) {
-      flex-basis: 25%;
     }
 
     @media (max-width: 480px) {
