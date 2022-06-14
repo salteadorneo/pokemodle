@@ -21,21 +21,28 @@
     </div>
 
     <div class="scene" v-if="pokemon.id">
-      <img :src="'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/' + (pokemon.id) + '.png'" :class="{ 'pokemon': true, 'active': win }" />
+      <img :src="'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/' + (pokemon.id) + '.png'" :class="{ 'pokemon': true, 'active': win, 'disappear': !intents }" />
     </div>
 
     <div v-if="!win">
 
       <div v-if="intents">
-        <input list="browsers" v-model="input" placeholder="¿Qué Pokemon es?" class="textInput" @blur="checkPokemon" />
+        <!-- <input list="browsers" v-model="input" placeholder="¿Qué Pokemon es?" class="textInput" @blur="checkPokemon" />
         <datalist id="browsers" v-show="input && input.length > 1">
           <option v-for="(pokemon, index) in pokedex" v-bind:key="index" :tabindex="index">{{pokemon.name}}</option>
-        </datalist>
+        </datalist> -->
+
+        <input v-model="input" placeholder="¿Qué Pokémon es?" class="textInput" readonly />
+        <div v-if="input && input.length >= 2 && pokedex.filter(p => p.name.toLowerCase().indexOf(input.toLowerCase()) == 0).length > 0" class="autocomplete">
+          <ul>
+            <li v-for="(pokemon, index) in pokedex.filter(p => p.name.toLowerCase().indexOf(input.toLowerCase()) == 0)" v-bind:key="index" @click.prevent="input=pokemon.name">{{pokemon.name}}</li>
+          </ul>
+        </div>
       </div>
 
-      <div class="pokeballs">
+      <div class="pokeballs" v-if="intents">
         <img v-for="item in intents" v-bind:key="item" src="./assets/pokeball.png" class="pokeball" />
-        <!-- <img v-for="item in 5 - intents|length" v-bind:key="item" src="./assets/pokeball.png" class="pokeball disabled" /> -->
+        <img v-for="item in 5 - intents|length" v-bind:key="item" src="./assets/pokeball.png" class="pokeball disabled" />
       </div>
         
     </div>
@@ -44,7 +51,7 @@
       <div>
         <h2 class="title">¡Enhorabuena!</h2>
         <p>Has atrapado tu Pokémon diario.</p>
-        <button @click="showPokedex=true">Consulta tu lista</button>
+        <button @click="showPokedex=true" class="btn">Ver Pokédex</button>
       </div>
     </div>
 
@@ -52,14 +59,14 @@
       <div>
         <h2 class="title">¡Se te ha escapado!</h2>
         <p>Vuelve mañana para encontrar otro.</p>
-        <button @click="showPokedex=true">Consulta tu lista</button>
+        <button @click="showPokedex=true" class="btn">Ver Pokédex</button>
       </div>
     </div>
 
     <br /><br />
-    <center><button @click.prevent="showPokedex = true">Completa la lista</button></center>
+    <center><button @click.prevent="showPokedex = true" class="btn">Ver Pokédex</button></center>
 
-    <div class="keyboard" v-if="false">
+    <div class="keyboard">
       <div class="keyrow">
         <button type="button" class="key" @click="setKey('q')">q</button>
         <button type="button" class="key" @click="setKey('w')">w</button>
@@ -86,6 +93,7 @@
       </div>
       <div class="keyrow">
         <button type="button" class="key" @click="setKey('enter')"><span style=font-size:22px>✓</span></button>
+        <button type="button" class="key" @click="setKey('-')">-</button>
         <button type="button" class="key" @click="setKey('z')">z</button>
         <button type="button" class="key" @click="setKey('x')">x</button>
         <button type="button" class="key" @click="setKey('c')">c</button>
@@ -137,7 +145,7 @@ export default {
       })
     } else this.randomPokemon()
 
-    //  document.body.addEventListener("keyup", this.keyup) 
+     document.body.addEventListener("keyup", this.keyup) 
 
     // document.querySelector(".pokedex").addEventListener('touchmove', this.touchMove, false);
     // document.querySelector(".pokedex").addEventListener('touchend', this.touchEnd, false);
@@ -179,7 +187,7 @@ export default {
         this.checkPokemon()
       } else if (e.key === 'Backspace') {
         this.input = this.input.slice(0, -1)
-      } else if (e.key.match(/^[a-zA-Z]$/g)) {
+      } else if (e.key.match(/^[a-zA-Z-]$/g)) {
         this.input += e.key
       }
     },
@@ -213,7 +221,7 @@ export default {
     //   return this.pokedex.filter(i => { return i.name.toLowerCase().startsWith(input.toLowerCase())}).map(i => { return i.name })
     // },
     checkPokemon() {
-      if (!this.intents) return
+      if (!this.intents || !this.input) return
       if (this.input.toLowerCase().trim() == this.pokemon.name.toLowerCase().trim()) {
         this.win = true
         this.pokemon.active = true
@@ -233,7 +241,7 @@ export default {
 <style lang="scss">
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
 
-html {
+* {
   box-sizing: border-box;
 }
 
@@ -292,7 +300,7 @@ a {
     transform: translate(-50%, -50%);
     z-index: 1;
     background: #fff;
-    border-radius: 5px;
+    border-radius: 6px;
     padding: 20px;
     width: 85%;
     max-width: 300px;
@@ -300,8 +308,6 @@ a {
 
     .close {
       background: none;
-      border: none;
-      appearance: none;
       color: #000;
     }
 
@@ -335,6 +341,10 @@ a {
     &.active {
       filter: none;
     }
+
+    &.disappear {
+      opacity: 0;
+    }
   }
 }
 
@@ -363,22 +373,29 @@ a {
   }
 }
 
+.btn {
+  background: #ed1e24;
+  color: white;
+  border-radius: 6px;
+  padding: 5px 25px;
+}
+
 .autocomplete {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  background: white;
+  background: rgba(255, 255, 255, 0.99);
   width: 250px;
   margin: 0 auto;
   z-index: 10;
 
-  datalist2 {
+  ul {
     display: block;
     list-style: none;
     padding: 2px 0;
     margin: 0;
 
-    option {
+    li {
       font-size: 14px;
       color: black;
       padding: 6px 12px;
@@ -388,6 +405,11 @@ a {
       border-radius: none;
     }
   }
+}
+
+button {
+  border: 0;
+  appearance: none;
 }
 
 .close {
@@ -401,8 +423,6 @@ a {
   font-weight: 600;
   padding: 5px 15px;
   background: none;
-  appearance: none;
-  border: 0;
 }
 
 .pokedex {
@@ -446,12 +466,6 @@ a {
       &:nth-of-type(#{$i}) {
         transform: translateY($i * 100px);
       }
-    }
-
-    @media (max-width: 800px) {
-    }
-
-    @media (max-width: 680px) {
     }
 
     @media (max-width: 480px) {
