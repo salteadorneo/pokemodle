@@ -5,8 +5,10 @@
       <div>
         <button v-on:click="() => { this.helped = false }" class="close">x</button>
         <h2 class="title">Cómo jugar</h2>
-        <p>Adivina el Pokémon oculto en cinco intentos.<br /><br />
-        ¡Uno nuevo cada día!</p>
+        <p>Adivina el Pokémon oculto y atrápalo. Tienes 5 intentos.</p>
+        <p><strong>¡Un nuevo Pokémon cada día!</strong></p>
+        <p class="small">Pokémon y los nombres de los personajes de Pokémon son marcas comerciales de Nintendo.</p>
+        <p class="small">Versión {{ version }}</p>
       </div>
     </div>
 
@@ -14,9 +16,9 @@
 
     <div :class="{ 'pokedex': true, 'active': showPokedex }">
       <button @click="showPokedex = false" class="close">x</button>
-      <div v-for="(pokemon, index) in pokedex" v-bind:key="index" :class="{ 'pokemon': true, 'active': pokemon.active }">
+      <div v-for="(pokemon, index) in pokedex" v-bind:key="index" :class="{ 'pokemon': true, 'active': pokemon.active }" :id="'pokemon' + getPokenumber(index + 1)">
         <img :src="'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/' + (index + 1) + '.png'" />
-        <h2>{{('000'+(index+1)).slice(-3)}}<br />{{ pokemon.name }}</h2>
+        <h2>{{getPokenumber(index + 1)}}<br />{{ pokemon.name }}</h2>
       </div>
     </div>
 
@@ -27,22 +29,17 @@
     <div v-if="!win">
 
       <div v-if="intents">
-        <!-- <input list="browsers" v-model="input" placeholder="¿Qué Pokemon es?" class="textInput" @blur="checkPokemon" />
-        <datalist id="browsers" v-show="input && input.length > 1">
-          <option v-for="(pokemon, index) in pokedex" v-bind:key="index" :tabindex="index">{{pokemon.name}}</option>
-        </datalist> -->
-
         <input v-model="input" placeholder="¿Qué Pokémon es?" class="textInput" readonly />
         <div v-if="input && input.length >= 2 && pokedex.filter(p => p.name.toLowerCase().indexOf(input.toLowerCase()) == 0).length > 0" class="autocomplete">
           <ul>
-            <li v-for="(pokemon, index) in pokedex.filter(p => p.name.toLowerCase().indexOf(input.toLowerCase()) == 0)" v-bind:key="index" @click.prevent="input=pokemon.name">{{pokemon.name}}</li>
+            <li v-for="(pokemon, index) in pokedex.filter(p => p.name.toLowerCase().indexOf(input.toLowerCase()) == 0)" v-bind:key="index" @click.prevent="setAndValidate(pokemon)">{{pokemon.name}}</li>
           </ul>
         </div>
       </div>
 
       <div class="pokeballs" v-if="intents">
-        <img v-for="item in intents" v-bind:key="item" src="./assets/pokeball.png" class="pokeball" />
-        <img v-for="item in 5 - intents|length" v-bind:key="item" src="./assets/pokeball.png" class="pokeball disabled" />
+        <img v-for="item in intents" v-bind:key="item + 1000" src="./assets/pokeball.png" class="pokeball" />
+        <img v-for="item in 5 - intents|length" v-bind:key="item + 2000" src="./assets/pokeball.png" class="pokeball disabled" />
       </div>
         
     </div>
@@ -51,7 +48,8 @@
       <div>
         <h2 class="title">¡Enhorabuena!</h2>
         <p>Has atrapado tu Pokémon diario.</p>
-        <button @click="showPokedex=true" class="btn">Ver Pokédex</button>
+        <button @click="showPokedexAndScroll" class="btn">Pokédex</button>
+        <p>Vuelve mañana para encontrar otro.</p>
       </div>
     </div>
 
@@ -59,14 +57,14 @@
       <div>
         <h2 class="title">¡Se te ha escapado!</h2>
         <p>Vuelve mañana para encontrar otro.</p>
-        <button @click="showPokedex=true" class="btn">Ver Pokédex</button>
+        <button @click="showPokedex=true" class="btn">Pokédex</button>
       </div>
     </div>
 
-    <br /><br />
-    <center><button @click.prevent="showPokedex = true" class="btn">Ver Pokédex</button></center>
+    <br />
+    <center v-if="!win"><button @click.prevent="showPokedex = true" class="btn">Pokédex</button></center>
 
-    <div class="keyboard">
+    <div class="keyboard" v-if="!win">
       <div class="keyrow">
         <button type="button" class="key" @click="setKey('q')">q</button>
         <button type="button" class="key" @click="setKey('w')">w</button>
@@ -119,6 +117,7 @@ export default {
   name: 'App',
   data() {
     return {
+      version: 0.1,
       pokedex: localStorage.pokedex ? JSON.parse(localStorage.pokedex) : [],
       pokemon: {},
       intents: localStorage.intents ? parseInt(localStorage.intents) : 5,
@@ -146,32 +145,26 @@ export default {
     } else this.randomPokemon()
 
      document.body.addEventListener("keyup", this.keyup) 
-
-    // document.querySelector(".pokedex").addEventListener('touchmove', this.touchMove, false);
-    // document.querySelector(".pokedex").addEventListener('touchend', this.touchEnd, false);
-    
   },
   methods: {
     closePopup() {
       this.helped = false
     },
-    // touchMove(e) {
-    //   e.preventDefault();
-    //   var dragElem = e.target;
-    //   var touch = e.touches[0];
-    //   // var positionX = touch.pageX;
-    //   var positionY = touch.pageY;
+    getPokenumber(v) {
+      return ('000' + v).slice(-3);
+    },
+    showPokedexAndScroll() {
+      this.showPokedex = true
 
-    //   // dragElem.style.left = positionX - anchor.left + 'px';
-    //   dragElem.style.top = positionY + 'px';
-    // },
-    // touchEnd(e) {
-    //   e.preventDefault();
-    //   var dragElem = e.target;
-
-    //   if (parseInt(dragElem.style.top) > 150) this.showPokedex = false
-    //   dragElem.removeAttribute("style")
-    // },
+      setTimeout(() => {
+        var element = document.querySelector('#pokemon' + this.getPokenumber(this.pokemon.id))
+        element.scrollIntoView({behavior: 'smooth', block: 'center'})
+      }, 1000);
+    },
+    setAndValidate(v) {
+      this.input = v.name;
+      this.checkPokemon();
+    },
     setKey(v) {
       if (v === 'enter') {
         this.checkPokemon()
@@ -199,7 +192,7 @@ export default {
       let noActives = this.pokedex.filter(i => !i.active)
 
       if (localStorage.pokemon) this.pokemon = JSON.parse(localStorage.pokemon)
-      console.log(this.pokemon.name)
+      // console.log(this.pokemon.name)
       if (this.pokemon && this.pokemon.date && moment(this.pokemon.date).isSame(this.today, 'day')) {
         this.win = this.pokemon.active
         return
@@ -213,23 +206,25 @@ export default {
       localStorage.intents = this.intents
 
       localStorage.pokemon = JSON.stringify(this.pokemon)
-
-      console.log(this.pokemon.name)
     },
-    // search(input) {
-    //   if (input.length < 1) { return [] }
-    //   return this.pokedex.filter(i => { return i.name.toLowerCase().startsWith(input.toLowerCase())}).map(i => { return i.name })
-    // },
     checkPokemon() {
       if (!this.intents || !this.input) return
       if (this.input.toLowerCase().trim() == this.pokemon.name.toLowerCase().trim()) {
         this.win = true
         this.pokemon.active = true
-        // localStorage.removeItem('pokemon')
+
+        window.navigator.vibrate(500);
+
+        let pokemon = this.pokedex.find(i => i.name == this.pokemon.name)
+        if (pokemon) pokemon.active = true
+        
         localStorage.pokemon = JSON.stringify(this.pokemon)
         localStorage.pokedex = JSON.stringify(this.pokedex)
+
       } else {
         this.intents--
+
+        window.navigator.vibrate(200);
       }
       localStorage.intents = this.intents
       this.input = ''
@@ -239,14 +234,14 @@ export default {
 </script>
 
 <style lang="scss">
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300&display=swap');
 
 * {
   box-sizing: border-box;
 }
 
 body {
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Lato', sans-serif;
   padding: 0;
   margin: 0;
   background: #f5f5f5;
@@ -270,12 +265,17 @@ a {
   border-radius: 50%;
   width: 26px;
   font-size: 16px;
-  line-height: 26px;
+  line-height: 23px;
   color: white;
   border: none;
   appearance: none;
   text-align: center;
-  padding: 0;
+  padding: 3px 0 0;
+}
+
+.small {
+  font-size: 10px;
+  line-height: 12px;
 }
 
 .popup {
@@ -355,7 +355,10 @@ a {
   padding: 12px;
   outline: none;
   appearance: none;
-  border: 1px solid gray;
+  background: none;
+  border: 0;
+  font-size: 17px;
+  line-height: 18px;
   text-align: center;
 }
 
@@ -377,7 +380,7 @@ a {
   background: #ed1e24;
   color: white;
   border-radius: 6px;
-  padding: 5px 25px;
+  padding: 10px 30px;
 }
 
 .autocomplete {
@@ -388,12 +391,14 @@ a {
   width: 250px;
   margin: 0 auto;
   z-index: 10;
+  overflow: hidden;
 
   ul {
     display: block;
     list-style: none;
     padding: 2px 0;
     margin: 0;
+    max-height: calc(30px * 4);
 
     li {
       font-size: 14px;
