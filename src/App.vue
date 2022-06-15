@@ -211,7 +211,7 @@ a {
 }
 
 #app {
-  width: 820px;
+  width: 530px;
   max-width: 100%;
   margin: 0 auto;
 }
@@ -287,13 +287,13 @@ a {
 .scene {
   width: 100%;
   height: 100%;
-  max-height: 475px;
   margin: 0 auto;
   text-align: center;
 
   .pokemon {
     position: relative;
-    max-width: 50%;
+    max-width: 65%;
+    max-height: 40vh;
     filter: brightness(0);
     transition: all 1s;
 
