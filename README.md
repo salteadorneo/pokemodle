@@ -1,4 +1,8 @@
-# pokemodle
+![pokemodle](src/assets/logo.png)
+
+Juega cada día desde [https://pokemodle.salteadorneo.dev/](https://pokemodle.salteadorneo.dev/)
+
+---
 
 ## Project setup
 ```
