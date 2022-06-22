@@ -52,7 +52,7 @@
         
         <div class="share">
           <a :href="'https://twitter.com/intent/tweet?url=https%3A%2F%2Fpokemodle.salteadorneo.dev%2F&text=' + shareText" target="_blank"><TwitterIcon /></a>
-          <a :href="'https://web.whatsapp.com/send?text=' + shareText + '%20https%3A%2F%2Fpokemodle.salteadorneo.dev%2F'" target="_blank"><WhatsappIcon /></a>
+          <a :href="'https://web.whatsapp.com/send?text=' + shareText + 'https%3A%2F%2Fpokemodle.salteadorneo.dev%2F'" target="_blank"><WhatsappIcon /></a>
           <a :href="'https://telegram.me/share/url?url=https%3A%2F%2Fpokemodle.salteadorneo.dev%2F&text=' + shareText" target="_blank"><TelegramIcon /></a>
           <button @click="clipboard" class="btn rounded"><CopyIcon /></button>
         </div>
@@ -126,7 +126,7 @@ export default {
   },
   methods: {
     clipboard() {
-      navigator.clipboard.writeText(decodeURIComponent(this.shareText))
+      navigator.clipboard.writeText(decodeURIComponent(this.shareText + ' https%3A%2F%2Fpokemodle.salteadorneo.dev%2F'))
     },
     closePopup() {
       this.helped = false
@@ -189,7 +189,7 @@ export default {
 
       if (location.href.includes("localhost")) console.log(this.pokemon.name)
 
-      this.shareText = encodeURIComponent('Pokemodle #' + this.getPokenumber(this.pokemon.id) + ' ¡Hoy he atrapado un ' + this.pokemon.name + '!\n')
+      this.shareText = encodeURIComponent('Pokemodle #' + this.getPokenumber(this.pokemon.id) + ' ¡Hoy he atrapado un ' + this.pokemon.name + '! ')
     },
     checkPokemon() {
       if (!this.intents || !this.input) return
