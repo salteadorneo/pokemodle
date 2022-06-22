@@ -7,8 +7,8 @@
         <h2 class="title">Cómo jugar</h2>
         <p>Adivina el Pokémon oculto y atrápalo. Tienes 5 intentos.</p>
         <p><strong>¡Un nuevo Pokémon cada día!</strong></p>
-        <p class="small">Pokémon y los nombres de los personajes de Pokémon son marcas comerciales de Nintendo.</p>
         <p class="small">Versión {{ version }}</p>
+        <p class="small">Pokémon y los nombres de los personajes de Pokémon son marcas comerciales de Nintendo.</p>
       </div>
     </div>
 
@@ -23,12 +23,11 @@
     </div>
 
     <div class="scene" v-if="pokemon.id">
-      <img :src="'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/' + (pokemon.id) + '.png'" :class="{ 'pokemon': true, 'active': win, 'disappear': !intents }" />
+      <img :src="'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/' + (pokemon.id) + '.png'" :class="{ 'pokemon': true, 'active': win, 'disappear': !intents && !pokemon.active }" />
     </div>
 
-    <div v-if="!win">
-
-      <div v-if="intents">
+    <div v-if="intents && !pokemon.active">
+      <div>
         <input v-model="input" placeholder="¿Qué Pokémon es?" class="textInput" readonly />
         <div v-if="input && input.length >= 2 && pokedex.filter(p => p.name.toLowerCase().indexOf(input.toLowerCase()) == 0).length > 0" class="autocomplete">
           <ul>
@@ -37,25 +36,33 @@
         </div>
       </div>
 
-      <div class="pokeballs" v-if="intents">
+      <div class="pokeballs">
         <img v-for="item in intents" v-bind:key="item + 1000" src="./assets/pokeball.png" class="pokeball" />
         <img v-for="item in 5 - intents|length" v-bind:key="item + 2000" src="./assets/pokeball.png" class="pokeball disabled" />
       </div>
 
       <br />
-      <center><button @click.prevent="showPokedex = true" class="btn">Pokédex</button></center>
+      <button @click.prevent="showPokedex = true" class="btn centered">Pokédex</button>
     </div>
 
-    <div v-if="win && !showPokedex" :class="{'popup active': win}" v-on:click="showPokedex = true">
+    <div v-if="win && !showPokedex" class="msg">
       <div>
         <h2 class="title">¡Enhorabuena!</h2>
         <p>Has atrapado tu Pokémon diario.</p>
+        
+        <div class="share">
+          <a :href="'https://twitter.com/intent/tweet?url=https%3A%2F%2Fpokemodle.salteadorneo.dev%2F&text=' + shareText" target="_blank"><TwitterIcon /></a>
+          <a :href="'https://web.whatsapp.com/send?text=' + shareText + '%20https%3A%2F%2Fpokemodle.salteadorneo.dev%2F'" target="_blank"><WhatsappIcon /></a>
+          <a :href="'https://telegram.me/share/url?url=https%3A%2F%2Fpokemodle.salteadorneo.dev%2F&text=' + shareText" target="_blank"><TelegramIcon /></a>
+          <button @click="clipboard" class="btn rounded"><CopyIcon /></button>
+        </div>
+
         <button @click="showPokedexAndScroll" class="btn">Pokédex</button>
         <p>Vuelve mañana para encontrar otro.</p>
       </div>
     </div>
 
-    <div v-if="!win && !intents && !showPokedex" :class="{'popup active': !win}" v-on:click="showPokedex = true">
+    <div v-if="!win && !intents && !showPokedex" class="msg">
       <div>
         <h2 class="title">¡Se te ha escapado!</h2>
         <p>Vuelve mañana para encontrar otro.</p>
@@ -63,32 +70,44 @@
       </div>
     </div>
 
-    <FixKeyboard @setKey="v => setKey(v)" />
+    <FixKeyboard @setKey="v => setKey(v)" v-if="!win && intents" />
   </div>
 </template>
 
 <script>
 import axios from 'axios'
 import moment from 'moment'
+
 import FixKeyboard from './components/FixKeyboard.vue'
+
+import TwitterIcon from './components/TwitterIcon.vue'
+import WhatsappIcon from './components/WhatsappIcon.vue'
+import TelegramIcon from './components/TelegramIcon.vue'
+import CopyIcon from './components/CopyIcon.vue'
+
 export default {
   name: 'App',
   data() {
     return {
-      version: 0.1,
+      version: 0.2,
       pokedex: localStorage.pokedex ? JSON.parse(localStorage.pokedex) : [],
       pokemon: {},
       intents: localStorage.intents ? parseInt(localStorage.intents) : 5,
       win: false,
       input: '',
       showPokedex: false,
-      helped: false
+      helped: false,
+      shareText: ''
     }
   },
   computed: {
   },
   components: {
-    FixKeyboard
+    FixKeyboard,
+    TwitterIcon,
+    WhatsappIcon,
+    TelegramIcon,
+    CopyIcon
   },
   mounted () {
     if (!localStorage.pokedex) {
@@ -106,6 +125,9 @@ export default {
      document.body.addEventListener("keyup", this.keyup) 
   },
   methods: {
+    clipboard() {
+      navigator.clipboard.writeText(decodeURIComponent(this.shareText))
+    },
     closePopup() {
       this.helped = false
     },
@@ -148,29 +170,32 @@ export default {
       this.intents = localStorage.intents ? parseInt(localStorage.intents) : 5
       this.today = moment()
 
-      let noActives = this.pokedex.filter(i => !i.active)
-
       if (localStorage.pokemon) this.pokemon = JSON.parse(localStorage.pokemon)
-      // console.log(this.pokemon.name)
-      if (this.pokemon && this.pokemon.date && moment(this.pokemon.date).isSame(this.today, 'day')) {
+      if (this.pokemon && this.pokemon.date && moment(this.pokemon.date).isSame(this.today, 'day'))
         this.win = this.pokemon.active
-        return
+
+      if (!localStorage.pokemon) {
+        let noActives = this.pokedex.filter(i => !i.active)
+
+        this.pokemon = noActives[Math.floor(Math.random() * noActives.length)]
+        this.pokemon.id = this.pokemon.url.split('/')[6]
+        this.pokemon.date = moment()
+        
+        this.intents = 5
+        localStorage.intents = this.intents
+      
+        localStorage.pokemon = JSON.stringify(this.pokemon)
       }
 
-      this.pokemon = noActives[Math.floor(Math.random() * noActives.length)]
-      this.pokemon.id = this.pokemon.url.split('/')[6]
-      this.pokemon.date = moment()
-      
-      this.intents = 5
-      localStorage.intents = this.intents
+      if (location.href.includes("localhost")) console.log(this.pokemon.name)
 
-      localStorage.pokemon = JSON.stringify(this.pokemon)
+      this.shareText = encodeURIComponent('Pokemodle #' + this.getPokenumber(this.pokemon.id) + ' ¡Hoy he atrapado un ' + this.pokemon.name + '!\n')
     },
     checkPokemon() {
       if (!this.intents || !this.input) return
       if (this.input.toLowerCase().trim() == this.pokemon.name.toLowerCase().trim()) {
-        this.win = true
         this.pokemon.active = true
+        this.win = this.pokemon.active
 
         window.navigator.vibrate(500);
 
@@ -179,6 +204,8 @@ export default {
         
         localStorage.pokemon = JSON.stringify(this.pokemon)
         localStorage.pokedex = JSON.stringify(this.pokedex)
+
+        this.randomPokemon()
 
       } else {
         this.intents--
@@ -197,6 +224,11 @@ export default {
 
 * {
   box-sizing: border-box;
+  user-select: none;
+}
+
+button {
+  cursor: pointer;
 }
 
 body {
@@ -220,7 +252,7 @@ a {
   position: fixed;
   top: 5px;
   left: 5px;
-  background: gray;
+  background: #666;
   border-radius: 50%;
   width: 26px;
   font-size: 16px;
@@ -230,6 +262,10 @@ a {
   appearance: none;
   text-align: center;
   padding: 3px 0 0;
+
+  &:hover {
+    background: #555;
+  }
 }
 
 .small {
@@ -277,6 +313,10 @@ a {
   }
 }
 
+.msg {
+  text-align: center;
+}
+
 .logo {
   display: block;
   max-width: 80%;
@@ -316,8 +356,8 @@ a {
   appearance: none;
   background: none;
   border: 0;
-  font-size: 17px;
-  line-height: 18px;
+  font-size: 18px;
+  line-height: 20px;
   text-align: center;
 }
 
@@ -340,13 +380,32 @@ a {
   color: white;
   border-radius: 6px;
   padding: 10px 30px;
+  cursor: pointer;
+
+  &:hover {
+    background: #bb171c;
+  }
+
+  &.centered {
+    display: block;
+    margin: 0 auto;
+  }
+
+  &.rounded {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    padding: 0;
+    text-align: center;
+  }
 }
 
 .autocomplete {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(255, 255, 255, 0.99);
+  background: rgba(255, 255, 255, .99);
   width: 250px;
   margin: 0 auto;
   z-index: 10;
@@ -374,6 +433,23 @@ a {
 button {
   border: 0;
   appearance: none;
+}
+
+.share {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px auto 20px;
+
+  a, .btn {
+    width: 35px;
+    height: 35px;
+    margin: 0 3px;
+
+    &:hover {
+      transform: scale(1.1);  
+    }
+  }
 }
 
 .close {
