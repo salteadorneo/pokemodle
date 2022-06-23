@@ -173,6 +173,8 @@ export default {
       if (localStorage.pokemon) this.pokemon = JSON.parse(localStorage.pokemon)
       if (this.pokemon && this.pokemon.date && moment(this.pokemon.date).isSame(this.today, 'day'))
         this.win = this.pokemon.active
+      else
+        localStorage.removeItem('pokemon')
 
       if (!localStorage.pokemon) {
         let noActives = this.pokedex.filter(i => !i.active)
