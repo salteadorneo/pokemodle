@@ -346,6 +346,10 @@ a {
     &.disappear {
       opacity: 0;
     }
+
+    @media (max-height: 667px) {
+      max-height: 30vh;
+    }
   }
 }
 
