@@ -197,7 +197,7 @@ export default {
         this.pokemon.active = true
         this.win = this.pokemon.active
 
-        window.navigator.vibrate(500);
+        try { window.navigator.vibrate(500); } catch (e) { console.log(e) }
 
         let pokemon = this.pokedex.find(i => i.name == this.pokemon.name)
         if (pokemon) pokemon.active = true
@@ -210,7 +210,7 @@ export default {
       } else {
         this.intents--
 
-        window.navigator.vibrate(200);
+        try { window.navigator.vibrate(200); } catch (e) { console.log(e) }
       }
       localStorage.intents = this.intents
       this.input = ''
