@@ -52,7 +52,7 @@
         
         <div class="share">
           <a :href="'https://twitter.com/intent/tweet?url=https%3A%2F%2Fpokemodle.salteadorneo.dev%2F&text=' + shareText" target="_blank"><TwitterIcon /></a>
-          <a :href="'https://web.whatsapp.com/send?text=' + shareText + 'https%3A%2F%2Fpokemodle.salteadorneo.dev%2F'" target="_blank"><WhatsappIcon /></a>
+          <a :href="'https://api.whatsapp.com/send?text=' + shareText + 'https%3A%2F%2Fpokemodle.salteadorneo.dev%2F'" target="_blank"><WhatsappIcon /></a>
           <a :href="'https://telegram.me/share/url?url=https%3A%2F%2Fpokemodle.salteadorneo.dev%2F&text=' + shareText" target="_blank"><TelegramIcon /></a>
           <button @click="clipboard" class="btn rounded"><CopyIcon /></button>
         </div>
