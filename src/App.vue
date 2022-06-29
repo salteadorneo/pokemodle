@@ -15,7 +15,7 @@
     <img src="./assets/logo.png" alt="Pokemodle" class="logo" />
 
     <div :class="{ 'pokedex': true, 'active': showPokedex }">
-      <button @click="showPokedex = false" class="close">x</button>
+      <button @click="showPokedex=false" class="close">x</button>
       <div v-for="(pokemon, index) in pokedex" v-bind:key="index" :class="{ 'pokemon': true, 'active': pokemon.active }" :id="'pokemon' + getPokenumber(index + 1)">
         <img :src="'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/' + (index + 1) + '.png'" />
         <h2>{{getPokenumber(index + 1)}}<br />{{ pokemon.name }}</h2>
@@ -42,7 +42,7 @@
       </div>
 
       <br />
-      <button @click.prevent="showPokedex = true" class="btn centered">Pokédex</button>
+      <button @click.prevent="setPokedex" class="btn centered">Pokédex</button>
     </div>
 
     <div v-if="win && !showPokedex" class="msg">
@@ -51,13 +51,13 @@
         <p>Has atrapado tu Pokémon diario.</p>
         
         <div class="share">
-          <a :href="'https://twitter.com/intent/tweet?url=https%3A%2F%2Fpokemodle.salteadorneo.dev%2F&text=' + shareText" target="_blank"><TwitterIcon /></a>
-          <a :href="'https://api.whatsapp.com/send?text=' + shareText + 'https%3A%2F%2Fpokemodle.salteadorneo.dev%2F'" target="_blank"><WhatsappIcon /></a>
-          <a :href="'https://telegram.me/share/url?url=https%3A%2F%2Fpokemodle.salteadorneo.dev%2F&text=' + shareText" target="_blank"><TelegramIcon /></a>
+          <a :href="'https://twitter.com/intent/tweet?url=https%3A%2F%2Fpokemodle.salteadorneo.dev%2F&text=' + shareText" target="_blank" @click="setEvent('twitter')"><TwitterIcon /></a>
+          <a :href="'https://api.whatsapp.com/send?text=' + shareText + 'https%3A%2F%2Fpokemodle.salteadorneo.dev%2F'" target="_blank" @click="setEvent('whatsapp')"><WhatsappIcon /></a>
+          <a :href="'https://telegram.me/share/url?url=https%3A%2F%2Fpokemodle.salteadorneo.dev%2F&text=' + shareText" target="_blank" @click="setEvent('telegram')"><TelegramIcon /></a>
           <button @click="clipboard" class="btn rounded"><CopyIcon /></button>
         </div>
 
-        <button @click="showPokedexAndScroll" class="btn">Pokédex</button>
+        <button @click="setPokedex" class="btn">Pokédex</button>
         <p>Vuelve mañana para encontrar otro.</p>
       </div>
     </div>
@@ -66,7 +66,7 @@
       <div>
         <h2 class="title">¡Se te ha escapado!</h2>
         <p>Vuelve mañana para encontrar otro.</p>
-        <button @click="showPokedex=true" class="btn">Pokédex</button>
+        <button @click="setPokedex" class="btn">Pokédex</button>
       </div>
     </div>
 
@@ -125,8 +125,21 @@ export default {
      document.body.addEventListener("keyup", this.keyup) 
   },
   methods: {
+    setEvent(e) {
+      this.$gtag.event('event', {
+        'event_category': 'share',
+        'event_label': e,
+        'value': this.pokemon.name
+      })
+    },
     clipboard() {
       navigator.clipboard.writeText(decodeURIComponent(this.shareText + ' https%3A%2F%2Fpokemodle.salteadorneo.dev%2F'))
+
+      this.$gtag.event('event', {
+        'event_category': 'share',
+        'event_label': 'clipboard',
+        'value': this.pokemon.name
+      })
     },
     closePopup() {
       this.helped = false
@@ -134,13 +147,17 @@ export default {
     getPokenumber(v) {
       return ('000' + v).slice(-3);
     },
-    showPokedexAndScroll() {
+    setPokedex() {
       this.showPokedex = true
 
-      setTimeout(() => {
-        var element = document.querySelector('#pokemon' + this.getPokenumber(this.pokemon.id))
-        element.scrollIntoView({behavior: 'smooth', block: 'center'})
-      }, 1000);
+      this.$gtag.pageview('/pokedex')
+
+      if (this.win) {
+        setTimeout(() => {
+          var element = document.querySelector('#pokemon' + this.getPokenumber(this.pokemon.id))
+          element.scrollIntoView({behavior: 'smooth', block: 'center'})
+        }, 1000);
+      }
     },
     setAndValidate(v) {
       this.input = v.name;
