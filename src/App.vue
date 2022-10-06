@@ -23,7 +23,7 @@
     </div>
 
     <div class="scene" v-if="pokemon.id">
-      <img :src="'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/' + (pokemon.id) + '.png'" :class="{ 'pokemon': true, 'active': win, 'disappear': !intents && !pokemon.active }" />
+      <img :src="'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/' + (pokemon.id) + '.png'" :class="{ 'pokemon': true, 'active': win, 'disappear': !intents && !pokemon.active }" draggable="false"/>
     </div>
 
     <div v-if="intents && !pokemon.active">
