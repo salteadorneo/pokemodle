@@ -38,7 +38,7 @@
 
       <div class="pokeballs">
         <img v-for="item in intents" v-bind:key="item + 1000" src="./assets/pokeball.png" class="pokeball" />
-        <img v-for="item in 5 - intents|length" v-bind:key="item + 2000" src="./assets/pokeball.png" class="pokeball disabled" />
+        <img v-for="item in 5 - intents" v-bind:key="item + 2000" src="./assets/pokeball.png" class="pokeball disabled" />
       </div>
 
       <br />
