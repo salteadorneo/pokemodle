@@ -28,7 +28,7 @@
 
     <div v-if="intents && !pokemon.active">
       <div>
-        <input v-model="input" placeholder="¿Qué Pokémon es?" class="textInput" readonly />
+        <input v-model="input" placeholder="¿Qué Pokémon es?" class="textInput" :class="{'error-shake': errorShake}" readonly />
         <div v-if="input && input.length >= 2 && pokedex.filter(p => p.name.toLowerCase().indexOf(input.toLowerCase()) == 0).length > 0" class="autocomplete">
           <ul>
             <li v-for="(pokemon, index) in pokedex.filter(p => p.name.toLowerCase().indexOf(input.toLowerCase()) == 0)" v-bind:key="index" @click.prevent="setAndValidate(pokemon)">{{pokemon.name}}</li>
@@ -38,7 +38,7 @@
 
       <div class="pokeballs">
         <img v-for="item in intents" v-bind:key="item + 1000" src="./assets/pokeball.png" class="pokeball" />
-        <img v-for="item in 5 - intents|length" v-bind:key="item + 2000" src="./assets/pokeball.png" class="pokeball disabled" />
+        <img v-for="item in 5 - intents" v-bind:key="item + 2000" src="./assets/pokeball.png" class="pokeball disabled" />
       </div>
 
       <br />
@@ -97,6 +97,7 @@ export default {
       input: '',
       showPokedex: false,
       helped: false,
+      errorShake: false,
       shareText: ''
     }
   },
@@ -212,6 +213,15 @@ export default {
     },
     checkPokemon() {
       if (!this.intents || !this.input) return
+      if(!this.pokedex.some(i => i.name == this.input)) {
+        const self = this;
+        self.errorShake = true;
+
+        setTimeout(() => {
+          self.errorShake = false;
+        }, 200);
+        return
+      }
       if (this.input.toLowerCase().trim() == this.pokemon.name.toLowerCase().trim()) {
         this.pokemon.active = true
         this.win = this.pokemon.active
@@ -549,5 +559,17 @@ button {
       transition: all 1s;
     }
   }
+}
+
+.error-shake {
+  animation: error_shake 0.4s 1 linear;
+}
+@keyframes error_shake {
+  0% { -webkit-transform: translate(30px); }
+  20% { -webkit-transform: translate(-30px); }
+  40% { -webkit-transform: translate(15px); }
+  60% { -webkit-transform: translate(-15px); }
+  80% { -webkit-transform: translate(8px); }
+  100% { -webkit-transform: translate(0px); }
 }
 </style>
