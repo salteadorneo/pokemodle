@@ -4,16 +4,26 @@ jobs:
   web-deploy:
     name: 🎉 Deploy
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x, 14.x, 15.x]
     steps:
-    - name: 🚚 Get latest code
-      uses: actions/checkout@v2
-    
-    - name: 📂 Sync files
-      uses: airvzxf/ftp-deployment-action@latest
-      with:
-        server: ${{ secrets.ftp_server }}
-        user: ${{ secrets.ftp_username }}
-        password: ${{ secrets.ftp_password }}
-        local_dir: "./dist"
-        remote_dir: "/test"
-        ftp_ssl_allow: "true"
+      - name: 🚚 Get latest code
+      - uses: actions/checkout@v3
+      
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm ci
+      - run: npm run build --if-present
+
+      - name: 📂 Sync files
+        uses: airvzxf/ftp-deployment-action@latest
+        with:
+          server: ${{ secrets.ftp_server }}
+          user: ${{ secrets.ftp_username }}
+          password: ${{ secrets.ftp_password }}
+          local_dir: "./dist"
+          remote_dir: "/test"
+          ftp_ssl_allow: "true"
