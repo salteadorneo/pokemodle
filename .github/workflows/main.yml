@@ -9,8 +9,11 @@ jobs:
       uses: actions/checkout@v2
     
     - name: 📂 Sync files
-      uses: SamKirkland/FTP-Deploy-Action@4.3.2
+      uses: airvzxf/ftp-deployment-action@latest
       with:
         server: ${{ secrets.ftp_server }}
-        username: ${{ secrets.ftp_username }}
+        user: ${{ secrets.ftp_username }}
         password: ${{ secrets.ftp_password }}
+        local_dir: "./dist"
+        remote_dir: "/test"
+        ftp_ssl_allow: "true"
