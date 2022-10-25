@@ -1,20 +1,43 @@
-import Vue from 'vue'
-import App from './App.vue'
+import Vue from "vue";
+import VueI18n from "vue-i18n";
 
-Vue.config.productionTip = false
+import App from "./App.vue";
+
+Vue.use(VueI18n);
+
+const messages = {
+  es: {
+    help: {
+      title: "Cómo jugar",
+    },
+  },
+  en: {
+    help: {
+      title: "How to play",
+    },
+  },
+};
+
+const i18n = new VueI18n({
+  locale: "es",
+  messages,
+});
+
+Vue.config.productionTip = false;
 
 import VueGtag from "vue-gtag";
 Vue.use(VueGtag, {
-  config: { 
+  config: {
     id: "G-H270X6V7RL",
     params: {
-      send_page_view: false
-    }
-  }
+      send_page_view: false,
+    },
+  },
 });
 
-Vue.use(require('vue-moment'));
+Vue.use(require("vue-moment"));
 
 new Vue({
-  render: h => h(App),
-}).$mount('#app')
+  i18n,
+  render: (h) => h(App),
+}).$mount("#app");

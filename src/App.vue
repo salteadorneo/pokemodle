@@ -1,44 +1,132 @@
 <template>
   <div id="app">
-    <button v-on:click="() => { this.helped = true }" class="help">?</button>
-    <div v-if="helped" class="popup active" v-on:click="() => { this.helped = false }">
+    <button
+      v-on:click="
+        () => {
+          this.helped = true;
+        }
+      "
+      class="help"
+    >
+      ?
+    </button>
+    <div
+      v-if="helped"
+      class="popup active"
+      v-on:click="
+        () => {
+          this.helped = false;
+        }
+      "
+    >
       <div>
-        <button v-on:click="() => { this.helped = false }" class="close">x</button>
-        <h2 class="title">Cómo jugar</h2>
+        <button
+          v-on:click="
+            () => {
+              this.helped = false;
+            }
+          "
+          class="close"
+        >
+          x
+        </button>
+        <h2 class="title">{{ $t("help.title") }}</h2>
         <p>Adivina el Pokémon oculto y atrápalo. Tienes 5 intentos.</p>
         <p><strong>¡Un nuevo Pokémon cada día!</strong></p>
         <p class="small">Versión {{ version }}</p>
-        <p class="small">Pokémon y los nombres de los personajes de Pokémon son marcas comerciales de Nintendo.</p>
+        <p class="small">
+          Pokémon y los nombres de los personajes de Pokémon son marcas
+          comerciales de Nintendo.
+        </p>
       </div>
     </div>
 
+    <Languages v-if="false" />
+
     <img src="./assets/logo.png" alt="Pokemodle" class="logo" />
 
-    <div :class="{ 'pokedex': true, 'active': showPokedex }">
-      <button @click="showPokedex=false" class="close">x</button>
-      <div v-for="(pokemon, index) in pokedex" v-bind:key="index" :class="{ 'pokemon': true, 'active': pokemon.active }" :id="'pokemon' + getPokenumber(index + 1)">
-        <img :src="'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/' + (index + 1) + '.png'" />
-        <h2>{{getPokenumber(index + 1)}}<br />{{ pokemon.name }}</h2>
+    <div v-if="showPokedex" :class="{ pokedex: true, active: showPokedex }">
+      <button @click="showPokedex = false" class="close">x</button>
+      <div
+        v-for="(pokemon, index) in pokedex"
+        v-bind:key="index"
+        :class="{ pokemon: true, active: pokemon.active }"
+        :id="'pokemon' + getPokenumber(index + 1)"
+      >
+        <img
+          loading="lazy"
+          :srcset="
+            'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/' +
+            (index + 1) +
+            '.png'
+          "
+        />
+        <h2>{{ getPokenumber(index + 1) }}<br />{{ pokemon.name }}</h2>
       </div>
     </div>
 
     <div class="scene" v-if="pokemon.id">
-      <img :src="'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/' + (pokemon.id) + '.png'" :class="{ 'pokemon': true, 'active': win, 'disappear': !intents && !pokemon.active }" draggable="false"/>
+      <img
+        :src="
+          'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/' +
+          pokemon.id +
+          '.png'
+        "
+        :class="{
+          pokemon: true,
+          active: win,
+          disappear: !intents && !pokemon.active,
+        }"
+        draggable="false"
+      />
     </div>
 
     <div v-if="intents && !pokemon.active">
       <div>
-        <input v-model="input" placeholder="¿Qué Pokémon es?" class="textInput" :class="{'error-shake': errorShake}" readonly />
-        <div v-if="input && input.length >= 2 && pokedex.filter(p => p.name.toLowerCase().indexOf(input.toLowerCase()) == 0).length > 0" class="autocomplete">
+        <input
+          v-model="input"
+          placeholder="¿Qué Pokémon es?"
+          class="textInput"
+          :class="{ 'error-shake': errorShake }"
+          readonly
+        />
+        <div
+          v-if="
+            input &&
+            input.length >= 2 &&
+            pokedex.filter(
+              (p) => p.name.toLowerCase().indexOf(input.toLowerCase()) == 0
+            ).length > 0
+          "
+          class="autocomplete"
+        >
           <ul>
-            <li v-for="(pokemon, index) in pokedex.filter(p => p.name.toLowerCase().indexOf(input.toLowerCase()) == 0)" v-bind:key="index" @click.prevent="setAndValidate(pokemon)">{{pokemon.name}}</li>
+            <li
+              v-for="(pokemon, index) in pokedex.filter(
+                (p) => p.name.toLowerCase().indexOf(input.toLowerCase()) == 0
+              )"
+              v-bind:key="index"
+              @click.prevent="setAndValidate(pokemon)"
+            >
+              {{ pokemon.name }}
+            </li>
           </ul>
         </div>
       </div>
 
       <div class="pokeballs">
-        <img v-for="item in intents" v-bind:key="item + 1000" src="./assets/pokeball.png" class="pokeball" />
-        <img v-for="item in 5 - intents" v-bind:key="item + 2000" src="./assets/pokeball.png" class="pokeball disabled" />
+        <img
+          v-for="item in intents"
+          v-bind:key="item + 1000"
+          src="./assets/pokeball.png"
+          class="pokeball"
+        />
+        <img
+          v-for="item in 5 - intents"
+          v-bind:key="item + 2000"
+          src="./assets/pokeball.png"
+          class="pokeball disabled"
+        />
       </div>
 
       <br />
@@ -49,11 +137,36 @@
       <div>
         <h2 class="title">¡Enhorabuena!</h2>
         <p>Has atrapado tu Pokémon diario.</p>
-        
+
         <div class="share">
-          <a :href="'https://twitter.com/intent/tweet?url=https%3A%2F%2Fpokemodle.salteadorneo.dev%2F&text=' + shareText" target="_blank" @click="setEvent('twitter')"><TwitterIcon /></a>
-          <a :href="'https://api.whatsapp.com/send?text=' + shareText + 'https%3A%2F%2Fpokemodle.salteadorneo.dev%2F'" target="_blank" @click="setEvent('whatsapp')"><WhatsappIcon /></a>
-          <a :href="'https://telegram.me/share/url?url=https%3A%2F%2Fpokemodle.salteadorneo.dev%2F&text=' + shareText" target="_blank" @click="setEvent('telegram')"><TelegramIcon /></a>
+          <a
+            :href="
+              'https://twitter.com/intent/tweet?url=https%3A%2F%2Fpokemodle.salteadorneo.dev%2F&text=' +
+              shareText
+            "
+            target="_blank"
+            @click="setEvent('twitter')"
+            ><TwitterIcon
+          /></a>
+          <a
+            :href="
+              'https://api.whatsapp.com/send?text=' +
+              shareText +
+              'https%3A%2F%2Fpokemodle.salteadorneo.dev%2F'
+            "
+            target="_blank"
+            @click="setEvent('whatsapp')"
+            ><WhatsappIcon
+          /></a>
+          <a
+            :href="
+              'https://telegram.me/share/url?url=https%3A%2F%2Fpokemodle.salteadorneo.dev%2F&text=' +
+              shareText
+            "
+            target="_blank"
+            @click="setEvent('telegram')"
+            ><TelegramIcon
+          /></a>
           <button @click="clipboard" class="btn rounded"><CopyIcon /></button>
         </div>
 
@@ -70,93 +183,111 @@
       </div>
     </div>
 
-    <FixKeyboard @setKey="v => setKey(v)" v-if="!win && intents" />
+    <FixKeyboard @setKey="(v) => setKey(v)" v-if="!win && intents" />
+
+    <BuyMeACoffee />
   </div>
 </template>
 
 <script>
-import axios from 'axios'
-import moment from 'moment'
+import axios from "axios";
+import moment from "moment";
 
-import FixKeyboard from './components/FixKeyboard.vue'
+import Languages from "./components/Languages.vue";
 
-import TwitterIcon from './components/TwitterIcon.vue'
-import WhatsappIcon from './components/WhatsappIcon.vue'
-import TelegramIcon from './components/TelegramIcon.vue'
-import CopyIcon from './components/CopyIcon.vue'
+import FixKeyboard from "./components/FixKeyboard.vue";
+
+import TwitterIcon from "./components/TwitterIcon.vue";
+import WhatsappIcon from "./components/WhatsappIcon.vue";
+import TelegramIcon from "./components/TelegramIcon.vue";
+import CopyIcon from "./components/CopyIcon.vue";
+
+import BuyMeACoffee from "./components/BuyMeACoffee.vue";
+
+import packageInfo from "../package.json";
+const { version } = packageInfo;
 
 export default {
-  name: 'App',
+  name: "App",
   data() {
     return {
-      version: 0.2,
+      version,
       pokedex: localStorage.pokedex ? JSON.parse(localStorage.pokedex) : [],
       pokemon: {},
       intents: localStorage.intents ? parseInt(localStorage.intents) : 5,
       win: false,
-      input: '',
+      input: "",
       showPokedex: false,
       helped: false,
       errorShake: false,
-      shareText: ''
-    }
+      shareText: "",
+    };
   },
-  computed: {
-  },
+  computed: {},
   components: {
+    Languages,
     FixKeyboard,
     TwitterIcon,
     WhatsappIcon,
     TelegramIcon,
-    CopyIcon
+    CopyIcon,
+    BuyMeACoffee,
   },
-  mounted () {
+  mounted() {
     if (!localStorage.pokedex) {
-      axios.get('https://pokeapi.co/api/v2/pokemon?limit=151&offset=0').then(res => {
-        this.pokedex = res.data.results
+      axios
+        .get("https://pokeapi.co/api/v2/pokemon?limit=151&offset=0")
+        .then((res) => {
+          this.pokedex = res.data.results;
 
-        localStorage.pokedex = JSON.stringify(this.pokedex)
+          localStorage.pokedex = JSON.stringify(this.pokedex);
 
-        this.helped = true
+          this.helped = true;
 
-        this.randomPokemon()
-      })
-    } else this.randomPokemon()
+          this.randomPokemon();
+        });
+    } else this.randomPokemon();
 
-     document.body.addEventListener("keyup", this.keyup) 
+    document.body.addEventListener("keyup", this.keyup);
   },
   methods: {
     setEvent(e) {
-      this.$gtag.event('event', {
-        'event_category': 'share',
-        'event_label': e,
-        'value': this.pokemon.name
-      })
+      this.$gtag.event("event", {
+        event_category: "share",
+        event_label: e,
+        value: this.pokemon.name,
+      });
     },
     clipboard() {
-      navigator.clipboard.writeText(decodeURIComponent(this.shareText + ' https%3A%2F%2Fpokemodle.salteadorneo.dev%2F'))
+      navigator.clipboard.writeText(
+        decodeURIComponent(
+          this.shareText + " https%3A%2F%2Fpokemodle.salteadorneo.dev%2F"
+        )
+      );
 
-      this.$gtag.event('event', {
-        'event_category': 'share',
-        'event_label': 'clipboard',
-        'value': this.pokemon.name
-      })
+      this.$gtag.event("event", {
+        event_category: "share",
+        event_label: "clipboard",
+        value: this.pokemon.name,
+      });
     },
     closePopup() {
-      this.helped = false
+      this.helped = false;
     },
     getPokenumber(v) {
-      return ('000' + v).slice(-3);
+      return ("000" + v).slice(-3);
     },
     setPokedex() {
-      this.showPokedex = true
+      this.showPokedex = true;
 
-      this.$gtag.pageview('/pokedex')
+      this.$gtag.pageview("/pokedex");
 
       if (this.win) {
         setTimeout(() => {
-          var element = document.querySelector('#pokemon' + this.getPokenumber(this.pokemon.id))
-          element.scrollIntoView({behavior: 'smooth', block: 'center'})
+          var element = document.querySelector(
+            "#pokemon" + this.getPokenumber(this.pokemon.id)
+          );
+          element.scrollIntoView({ behavior: "smooth", block: "center" });
         }, 1000);
       }
     },
@@ -165,91 +296,110 @@ export default {
       this.checkPokemon();
     },
     setKey(v) {
-      if (v === 'enter') {
-        this.checkPokemon()
-      } else if (v === 'return') {
-        this.input = this.input.slice(0, -1)
+      if (v === "enter") {
+        this.checkPokemon();
+      } else if (v === "return") {
+        this.input = this.input.slice(0, -1);
       } else {
-        this.input += v
+        this.input += v;
       }
     },
     keyup(e) {
-      if (!e.key) return
-      if (e.key === 'Enter') {
-        this.checkPokemon()
-      } else if (e.key === 'Backspace') {
-        this.input = this.input.slice(0, -1)
+      if (!e.key) return;
+      if (e.key === "Enter") {
+        this.checkPokemon();
+      } else if (e.key === "Backspace") {
+        this.input = this.input.slice(0, -1);
       } else if (e.key.match(/^[a-zA-Z-]$/g)) {
-        this.input += e.key
+        this.input += e.key;
       }
     },
     randomPokemon() {
-      this.win = false
-      this.intents = localStorage.intents ? parseInt(localStorage.intents) : 5
-      this.today = moment()
+      this.win = false;
+      this.intents = localStorage.intents ? parseInt(localStorage.intents) : 5;
+      this.today = moment();
 
-      if (localStorage.pokemon) this.pokemon = JSON.parse(localStorage.pokemon)
-      if (this.pokemon && this.pokemon.date && moment(this.pokemon.date).isSame(this.today, 'day'))
-        this.win = this.pokemon.active
-      else
-        localStorage.removeItem('pokemon')
+      if (localStorage.pokemon) this.pokemon = JSON.parse(localStorage.pokemon);
+      if (
+        this.pokemon &&
+        this.pokemon.date &&
+        moment(this.pokemon.date).isSame(this.today, "day")
+      )
+        this.win = this.pokemon.active;
+      else localStorage.removeItem("pokemon");
 
       if (!localStorage.pokemon) {
-        let noActives = this.pokedex.filter(i => !i.active)
+        let noActives = this.pokedex.filter((i) => !i.active);
 
-        this.pokemon = noActives[Math.floor(Math.random() * noActives.length)]
-        this.pokemon.id = this.pokemon.url.split('/')[6]
-        this.pokemon.date = moment()
-        
-        this.intents = 5
-        localStorage.intents = this.intents
-      
-        localStorage.pokemon = JSON.stringify(this.pokemon)
+        this.pokemon = noActives[Math.floor(Math.random() * noActives.length)];
+        this.pokemon.id = this.pokemon.url.split("/")[6];
+        this.pokemon.date = moment();
+
+        this.intents = 5;
+        localStorage.intents = this.intents;
+
+        localStorage.pokemon = JSON.stringify(this.pokemon);
       }
 
-      if (location.href.includes("localhost")) console.log(this.pokemon.name)
+      if (location.href.includes("localhost")) console.log(this.pokemon.name);
 
-      this.shareText = encodeURIComponent('Pokemodle #' + this.getPokenumber(this.pokemon.id) + ' ¡Hoy he atrapado un ' + this.pokemon.name + '! ')
+      this.shareText = encodeURIComponent(
+        "Pokemodle #" +
+          this.getPokenumber(this.pokemon.id) +
+          " ¡Hoy he atrapado un " +
+          this.pokemon.name +
+          "! "
+      );
     },
     checkPokemon() {
-      if (!this.intents || !this.input) return
-      if(!this.pokedex.some(i => i.name == this.input)) {
+      if (!this.intents || !this.input) return;
+      if (!this.pokedex.some((i) => i.name == this.input)) {
         const self = this;
         self.errorShake = true;
 
         setTimeout(() => {
           self.errorShake = false;
         }, 200);
-        return
+        return;
       }
-      if (this.input.toLowerCase().trim() == this.pokemon.name.toLowerCase().trim()) {
-        this.pokemon.active = true
-        this.win = this.pokemon.active
+      if (
+        this.input.toLowerCase().trim() ==
+        this.pokemon.name.toLowerCase().trim()
+      ) {
+        this.pokemon.active = true;
+        this.win = this.pokemon.active;
 
-        try { window.navigator.vibrate(500); } catch (e) { console.log(e) }
+        try {
+          window.navigator.vibrate(500);
+        } catch (e) {
+          console.log(e);
+        }
 
-        let pokemon = this.pokedex.find(i => i.name == this.pokemon.name)
-        if (pokemon) pokemon.active = true
-        
-        localStorage.pokemon = JSON.stringify(this.pokemon)
-        localStorage.pokedex = JSON.stringify(this.pokedex)
+        let pokemon = this.pokedex.find((i) => i.name == this.pokemon.name);
+        if (pokemon) pokemon.active = true;
 
-        this.randomPokemon()
+        localStorage.pokemon = JSON.stringify(this.pokemon);
+        localStorage.pokedex = JSON.stringify(this.pokedex);
 
+        this.randomPokemon();
       } else {
-        this.intents--
+        this.intents--;
 
-        try { window.navigator.vibrate(200); } catch (e) { console.log(e) }
+        try {
+          window.navigator.vibrate(200);
+        } catch (e) {
+          console.log(e);
+        }
       }
-      localStorage.intents = this.intents
-      this.input = ''
-    }
-  }
-}
+      localStorage.intents = this.intents;
+      this.input = "";
+    },
+  },
+};
 </script>
 
 <style lang="scss">
-@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@300&display=swap");
 
 * {
   box-sizing: border-box;
@@ -261,7 +411,7 @@ button {
 }
 
 body {
-  font-family: 'Lato', sans-serif;
+  font-family: "Lato", sans-serif;
   padding: 0;
   margin: 0;
   background: #f5f5f5;
@@ -403,7 +553,7 @@ a {
     width: 40px;
 
     &.disabled {
-      opacity: .3;
+      opacity: 0.3;
     }
   }
 }
@@ -438,7 +588,7 @@ a {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(255, 255, 255, .99);
+  background: rgba(255, 255, 255, 0.99);
   width: 250px;
   margin: 0 auto;
   z-index: 10;
@@ -474,13 +624,14 @@ button {
   justify-content: center;
   margin: 10px auto 20px;
 
-  a, .btn {
+  a,
+  .btn {
     width: 35px;
     height: 35px;
     margin: 0 3px;
 
     &:hover {
-      transform: scale(1.1);  
+      transform: scale(1.1);
     }
   }
 }
@@ -513,7 +664,7 @@ button {
   background: url(./assets/pokedex.png) no-repeat left top #ed1e24;
   padding-top: 140px;
   opacity: 0;
-  transition: top .5s, opacity .5s;
+  transition: top 0.5s, opacity 0.5s;
 
   &.active {
     position: absolute;
@@ -534,7 +685,8 @@ button {
     position: relative;
     transition: all 1s;
     opacity: 0;
-    
+    min-height: 145px;
+
     @for $i from 1 through 151 {
       &:nth-of-type(#{$i}) {
         transform: translateY($i * 100px);
@@ -555,7 +707,7 @@ button {
     img {
       max-width: 70%;
       filter: brightness(0) invert(1);
-      opacity: .05;
+      opacity: 0.05;
       transition: all 1s;
     }
   }
@@ -565,11 +717,23 @@ button {
   animation: error_shake 0.4s 1 linear;
 }
 @keyframes error_shake {
-  0% { -webkit-transform: translate(30px); }
-  20% { -webkit-transform: translate(-30px); }
-  40% { -webkit-transform: translate(15px); }
-  60% { -webkit-transform: translate(-15px); }
-  80% { -webkit-transform: translate(8px); }
-  100% { -webkit-transform: translate(0px); }
+  0% {
+    -webkit-transform: translate(30px);
+  }
+  20% {
+    -webkit-transform: translate(-30px);
+  }
+  40% {
+    -webkit-transform: translate(15px);
+  }
+  60% {
+    -webkit-transform: translate(-15px);
+  }
+  80% {
+    -webkit-transform: translate(8px);
+  }
+  100% {
+    -webkit-transform: translate(0px);
+  }
 }
 </style>
