@@ -204,11 +204,14 @@ import CopyIcon from "./components/CopyIcon.vue";
 
 import BuyMeACoffee from "./components/BuyMeACoffee.vue";
 
+import packageInfo from "../package.json";
+const { version } = packageInfo;
+
 export default {
   name: "App",
   data() {
     return {
-      version: 0.3,
+      version,
       pokedex: localStorage.pokedex ? JSON.parse(localStorage.pokedex) : [],
       pokemon: {},
       intents: localStorage.intents ? parseInt(localStorage.intents) : 5,
