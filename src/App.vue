@@ -30,7 +30,7 @@
         >
           x
         </button>
-        <h2 class="title">Cómo jugar</h2>
+        <h2 class="title">{{ $t("help.title") }}</h2>
         <p>Adivina el Pokémon oculto y atrápalo. Tienes 5 intentos.</p>
         <p><strong>¡Un nuevo Pokémon cada día!</strong></p>
         <p class="small">Versión {{ version }}</p>
@@ -41,9 +41,11 @@
       </div>
     </div>
 
+    <Languages v-if="false" />
+
     <img src="./assets/logo.png" alt="Pokemodle" class="logo" />
 
-    <div :class="{ pokedex: true, active: showPokedex }">
+    <div v-if="showPokedex" :class="{ pokedex: true, active: showPokedex }">
       <button @click="showPokedex = false" class="close">x</button>
       <div
         v-for="(pokemon, index) in pokedex"
@@ -52,7 +54,8 @@
         :id="'pokemon' + getPokenumber(index + 1)"
       >
         <img
-          :src="
+          loading="lazy"
+          :srcset="
             'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/' +
             (index + 1) +
             '.png'
@@ -190,12 +193,15 @@
 import axios from "axios";
 import moment from "moment";
 
+import Languages from "./components/Languages.vue";
+
 import FixKeyboard from "./components/FixKeyboard.vue";
 
 import TwitterIcon from "./components/TwitterIcon.vue";
 import WhatsappIcon from "./components/WhatsappIcon.vue";
 import TelegramIcon from "./components/TelegramIcon.vue";
 import CopyIcon from "./components/CopyIcon.vue";
+
 import BuyMeACoffee from "./components/BuyMeACoffee.vue";
 
 export default {
@@ -216,6 +222,7 @@ export default {
   },
   computed: {},
   components: {
+    Languages,
     FixKeyboard,
     TwitterIcon,
     WhatsappIcon,
@@ -675,6 +682,7 @@ button {
     position: relative;
     transition: all 1s;
     opacity: 0;
+    min-height: 145px;
 
     @for $i from 1 through 151 {
       &:nth-of-type(#{$i}) {
