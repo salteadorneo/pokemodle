@@ -38,6 +38,7 @@
           Pokémon y los nombres de los personajes de Pokémon son marcas
           comerciales de Nintendo.
         </p>
+        <GitHub />
       </div>
     </div>
 
@@ -45,7 +46,7 @@
 
     <img src="./assets/logo.png" alt="Pokemodle" class="logo" />
 
-    <div v-if="showPokedex" :class="{ pokedex: true, active: showPokedex }">
+    <div :class="{ pokedex: true, active: showPokedex }">
       <button @click="showPokedex = false" class="close">x</button>
       <div
         v-for="(pokemon, index) in pokedex"
@@ -130,7 +131,7 @@
       </div>
 
       <br />
-      <button @click.prevent="setPokedex" class="btn centered">Pokédex</button>
+      <button @click.prevent="setPokedex" class="btn centered" v-if="false">Pokédex</button>
     </div>
 
     <div v-if="win && !showPokedex" class="msg">
@@ -193,6 +194,7 @@
 import axios from "axios";
 import moment from "moment";
 
+import GitHub from "./components/GitHub.vue";
 import Languages from "./components/Languages.vue";
 
 import FixKeyboard from "./components/FixKeyboard.vue";
@@ -226,6 +228,7 @@ export default {
   computed: {},
   components: {
     Languages,
+    GitHub,
     FixKeyboard,
     TwitterIcon,
     WhatsappIcon,
@@ -475,7 +478,7 @@ a {
     z-index: 1;
     background: #fff;
     border-radius: 6px;
-    padding: 20px;
+    padding: 20px 20px 40px;
     width: 85%;
     max-width: 300px;
     text-align: center;
