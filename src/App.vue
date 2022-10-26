@@ -131,7 +131,9 @@
       </div>
 
       <br />
-      <button @click.prevent="setPokedex" class="btn centered" v-if="false">Pokédex</button>
+      <button @click.prevent="setPokedex" class="btn centered" v-if="false">
+        Pokédex
+      </button>
     </div>
 
     <div v-if="win && !showPokedex" class="msg">
@@ -549,15 +551,33 @@ a {
 
 .pokeballs {
   display: flex;
+  align-items: center;
   justify-content: center;
-  margin: 10px auto 0;
+  margin: 30px auto 0;
 
   .pokeball {
     width: 40px;
+    position: relative;
+    transition: all 1s;
+    opacity: 0;
+    animation: top 2s ease-out forwards;
+
+    @for $i from 1 through 5 {
+      &:nth-of-type(#{$i}) {
+        transform: translateY($i * 30px);
+      }
+    }
 
     &.disabled {
       opacity: 0.3;
     }
+  }
+}
+
+@keyframes top {
+  100% {
+    transform: translateY(0);
+    opacity: 1;
   }
 }
 
