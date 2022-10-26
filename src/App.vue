@@ -38,6 +38,7 @@
           Pokémon y los nombres de los personajes de Pokémon son marcas
           comerciales de Nintendo.
         </p>
+        <GitHub />
       </div>
     </div>
 
@@ -45,7 +46,7 @@
 
     <img src="./assets/logo.png" alt="Pokemodle" class="logo" />
 
-    <div v-if="showPokedex" :class="{ pokedex: true, active: showPokedex }">
+    <div :class="{ pokedex: true, active: showPokedex }">
       <button @click="showPokedex = false" class="close">x</button>
       <div
         v-for="(pokemon, index) in pokedex"
@@ -193,6 +194,7 @@
 import axios from "axios";
 import moment from "moment";
 
+import GitHub from "./components/GitHub.vue";
 import Languages from "./components/Languages.vue";
 
 import FixKeyboard from "./components/FixKeyboard.vue";
@@ -226,6 +228,7 @@ export default {
   computed: {},
   components: {
     Languages,
+    GitHub,
     FixKeyboard,
     TwitterIcon,
     WhatsappIcon,
@@ -475,7 +478,7 @@ a {
     z-index: 1;
     background: #fff;
     border-radius: 6px;
-    padding: 20px;
+    padding: 20px 20px 40px;
     width: 85%;
     max-width: 300px;
     text-align: center;
@@ -515,6 +518,7 @@ a {
     max-height: 40vh;
     filter: brightness(0);
     transition: all 1s;
+    pointer-events: none;
 
     &.active {
       filter: none;
@@ -546,15 +550,35 @@ a {
 
 .pokeballs {
   display: flex;
+  align-items: center;
   justify-content: center;
-  margin: 10px auto 0;
+  margin: 15px auto 0;
 
   .pokeball {
     width: 40px;
+    position: relative;
+    transition: all 1s;
+    opacity: 0;
+    animation: top 2s ease-out forwards;
+
+    @for $i from 1 through 5 {
+      &:nth-of-type(#{$i}) {
+        transform: translateY($i * 30px);
+      }
+    }
 
     &.disabled {
-      opacity: 0.3;
+      transform: none;
+      animation: none;
+      opacity: 0.3 !important;
     }
+  }
+}
+
+@keyframes top {
+  100% {
+    transform: translateY(0);
+    opacity: 1;
   }
 }
 
