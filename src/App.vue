@@ -1,46 +1,6 @@
 <template>
   <div id="app">
-    <button
-      v-on:click="
-        () => {
-          this.helped = true;
-        }
-      "
-      class="help"
-    >
-      ?
-    </button>
-    <div
-      v-if="helped"
-      class="popup active"
-      v-on:click="
-        () => {
-          this.helped = false;
-        }
-      "
-    >
-      <div>
-        <button
-          v-on:click="
-            () => {
-              this.helped = false;
-            }
-          "
-          class="close"
-        >
-          x
-        </button>
-        <h2 class="title">{{ $t("help.title") }}</h2>
-        <p>Adivina el Pokémon oculto y atrápalo. Tienes 5 intentos.</p>
-        <p><strong>¡Un nuevo Pokémon cada día!</strong></p>
-        <p class="small">Versión {{ version }}</p>
-        <p class="small">
-          Pokémon y los nombres de los personajes de Pokémon son marcas
-          comerciales de Nintendo.
-        </p>
-        <GitHub />
-      </div>
-    </div>
+    <HelpModal />
 
     <Languages v-if="false" />
 
@@ -194,7 +154,7 @@
 import axios from "axios";
 import moment from "moment";
 
-import GitHub from "./components/GitHub.vue";
+import HelpModal from "./components/HelpModal.vue";
 import Languages from "./components/Languages.vue";
 
 import FixKeyboard from "./components/FixKeyboard.vue";
@@ -206,29 +166,24 @@ import CopyIcon from "./components/CopyIcon.vue";
 
 import BuyMeACoffee from "./components/BuyMeACoffee.vue";
 
-import packageInfo from "../package.json";
-const { version } = packageInfo;
-
 export default {
   name: "App",
   data() {
     return {
-      version,
       pokedex: localStorage.pokedex ? JSON.parse(localStorage.pokedex) : [],
       pokemon: {},
       intents: localStorage.intents ? parseInt(localStorage.intents) : 5,
       win: false,
       input: "",
       showPokedex: false,
-      helped: false,
       errorShake: false,
       shareText: "",
     };
   },
   computed: {},
   components: {
+    HelpModal,
     Languages,
-    GitHub,
     FixKeyboard,
     TwitterIcon,
     WhatsappIcon,
@@ -244,8 +199,6 @@ export default {
           this.pokedex = res.data.results;
 
           localStorage.pokedex = JSON.stringify(this.pokedex);
-
-          this.helped = true;
 
           this.randomPokemon();
         });
@@ -273,9 +226,6 @@ export default {
         event_label: "clipboard",
         value: this.pokemon.name,
       });
-    },
-    closePopup() {
-      this.helped = false;
     },
     getPokenumber(v) {
       return ("000" + v).slice(-3);
