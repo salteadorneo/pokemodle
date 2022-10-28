@@ -21,6 +21,7 @@
             (index + 1) +
             '.png'
           "
+          alt=""
         />
         <h2>{{ getPokenumber(index + 1) }}<br />{{ pokemon.name }}</h2>
       </div>
@@ -33,6 +34,7 @@
           pokemon.id +
           '.png'
         "
+        alt=""
         :class="{
           pokemon: true,
           active: win,
@@ -80,12 +82,14 @@
           v-for="item in intents"
           v-bind:key="item + 1000"
           src="./assets/pokeball.png"
+          alt=""
           class="pokeball"
         />
         <img
           v-for="item in 5 - intents"
           v-bind:key="item + 2000"
           src="./assets/pokeball.png"
+          alt=""
           class="pokeball disabled"
         />
       </div>
@@ -94,7 +98,14 @@
       <button @click.prevent="setPokedex" class="btn centered">Pokédex</button>
     </div>
 
-    <ResultModal v-if="!showPokedex" :pokemon="pokemon" :shareText="shareText" :win="win" :intents="intents" :setPokedex="setPokedex" />
+    <ResultModal
+      v-if="!showPokedex"
+      :pokemon="pokemon"
+      :shareText="shareText"
+      :win="win"
+      :intents="intents"
+      :setPokedex="setPokedex"
+    />
 
     <FixKeyboard @setKey="(v) => setKey(v)" v-if="!win && intents" />
 
@@ -108,7 +119,7 @@ import moment from "moment";
 
 import HelpModal from "./components/HelpModal.vue";
 import Languages from "./components/Languages.vue";
-import ResultModal from "./components/ResultModal.vue"
+import ResultModal from "./components/ResultModal.vue";
 import FixKeyboard from "./components/FixKeyboard.vue";
 import BuyMeACoffee from "./components/BuyMeACoffee.vue";
 
@@ -160,7 +171,7 @@ export default {
 
       if (this.win) {
         setTimeout(() => {
-          var element = document.querySelector(
+          const element = document.querySelector(
             "#pokemon" + this.getPokenumber(this.pokemon.id)
           );
           element.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -275,7 +286,32 @@ export default {
 </script>
 
 <style lang="scss">
-@import url("https://fonts.googleapis.com/css2?family=Lato:wght@300&display=swap");
+@font-face {
+  font-family: "Lato";
+  src: url("./fonts/Lato-Bold.woff2") format("woff2"),
+    url("./fonts/Lato-Bold.woff") format("woff");
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Lato";
+  src: url("./fonts/Lato-Light.woff2") format("woff2"),
+    url("./fonts/Lato-Light.woff") format("woff");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Lato";
+  src: url("./fonts/Lato-Regular.woff2") format("woff2"),
+    url("./fonts/Lato-Regular.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
 
 * {
   box-sizing: border-box;

@@ -112,44 +112,4 @@ export default {
     }
   }
 }
-
-.popup {
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  z-index: 10;
-  background: #00000050;
-  opacity: 0;
-  transition: all 1s;
-
-  &.active {
-    opacity: 1;
-  }
-
-  & > div {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 1;
-    background: #fff;
-    border-radius: 6px;
-    padding: 20px 20px 40px;
-    width: 85%;
-    max-width: 300px;
-    text-align: center;
-
-    .close {
-      background: none;
-      color: #000;
-    }
-
-    .title {
-      text-align: center;
-      margin: 0 auto;
-    }
-  }
-}
 </style>

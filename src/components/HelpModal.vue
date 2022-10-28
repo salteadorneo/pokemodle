@@ -35,11 +35,12 @@
         <p>
           <strong>{{ $t("help.strong") }}</strong>
         </p>
+        <hr class="line" />
         <p class="small">{{ $t("help.version") }} {{ version }}</p>
+        <GitHub />
         <p class="small">
           {{ $t("help.legal") }}
         </p>
-        <GitHub />
       </div>
     </div>
   </section>
@@ -73,6 +74,13 @@ export default {
 .small {
   font-size: 10px;
   line-height: 12px;
+}
+
+.line {
+  display: block;
+  width: 90%;
+  border: 1px solid #ececec;
+  margin: 20px auto;
 }
 
 .help {
@@ -118,7 +126,7 @@ export default {
     z-index: 1;
     background: #fff;
     border-radius: 6px;
-    padding: 20px 20px 40px;
+    padding: 20px;
     width: 85%;
     max-width: 300px;
     text-align: center;
