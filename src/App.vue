@@ -94,55 +94,7 @@
       <button @click.prevent="setPokedex" class="btn centered">Pokédex</button>
     </div>
 
-    <div v-if="win && !showPokedex" class="msg">
-      <div>
-        <h2 class="title">¡Enhorabuena!</h2>
-        <p>Has atrapado tu Pokémon diario.</p>
-
-        <div class="share">
-          <a
-            :href="
-              'https://twitter.com/intent/tweet?url=https%3A%2F%2Fpokemodle.salteadorneo.dev%2F&text=' +
-              shareText
-            "
-            target="_blank"
-            @click="setEvent('twitter')"
-            ><TwitterIcon
-          /></a>
-          <a
-            :href="
-              'https://api.whatsapp.com/send?text=' +
-              shareText +
-              'https%3A%2F%2Fpokemodle.salteadorneo.dev%2F'
-            "
-            target="_blank"
-            @click="setEvent('whatsapp')"
-            ><WhatsappIcon
-          /></a>
-          <a
-            :href="
-              'https://telegram.me/share/url?url=https%3A%2F%2Fpokemodle.salteadorneo.dev%2F&text=' +
-              shareText
-            "
-            target="_blank"
-            @click="setEvent('telegram')"
-            ><TelegramIcon
-          /></a>
-          <button @click="clipboard" class="btn rounded"><CopyIcon /></button>
-        </div>
-
-        <button @click="setPokedex" class="btn">Pokédex</button>
-        <p>Vuelve mañana para encontrar otro.</p>
-      </div>
-    </div>
-
-    <div v-if="!win && !intents && !showPokedex" class="msg">
-      <div>
-        <h2 class="title">¡Se te ha escapado!</h2>
-        <p>Vuelve mañana para encontrar otro.</p>
-        <button @click="setPokedex" class="btn">Pokédex</button>
-      </div>
-    </div>
+    <ResultModal v-if="!showPokedex" :pokemon="pokemon" :shareText="shareText" :win="win" :intents="intents" :setPokedex="setPokedex" />
 
     <FixKeyboard @setKey="(v) => setKey(v)" v-if="!win && intents" />
 
@@ -156,14 +108,8 @@ import moment from "moment";
 
 import HelpModal from "./components/HelpModal.vue";
 import Languages from "./components/Languages.vue";
-
+import ResultModal from "./components/ResultModal.vue"
 import FixKeyboard from "./components/FixKeyboard.vue";
-
-import TwitterIcon from "./components/TwitterIcon.vue";
-import WhatsappIcon from "./components/WhatsappIcon.vue";
-import TelegramIcon from "./components/TelegramIcon.vue";
-import CopyIcon from "./components/CopyIcon.vue";
-
 import BuyMeACoffee from "./components/BuyMeACoffee.vue";
 
 export default {
@@ -184,11 +130,8 @@ export default {
   components: {
     HelpModal,
     Languages,
+    ResultModal,
     FixKeyboard,
-    TwitterIcon,
-    WhatsappIcon,
-    TelegramIcon,
-    CopyIcon,
     BuyMeACoffee,
   },
   mounted() {
@@ -207,26 +150,6 @@ export default {
     document.body.addEventListener("keyup", this.keyup);
   },
   methods: {
-    setEvent(e) {
-      this.$gtag.event("event", {
-        event_category: "share",
-        event_label: e,
-        value: this.pokemon.name,
-      });
-    },
-    clipboard() {
-      navigator.clipboard.writeText(
-        decodeURIComponent(
-          this.shareText + " https%3A%2F%2Fpokemodle.salteadorneo.dev%2F"
-        )
-      );
-
-      this.$gtag.event("event", {
-        event_category: "share",
-        event_label: "clipboard",
-        value: this.pokemon.name,
-      });
-    },
     getPokenumber(v) {
       return ("000" + v).slice(-3);
     },
@@ -359,10 +282,6 @@ export default {
   user-select: none;
 }
 
-button {
-  cursor: pointer;
-}
-
 body {
   font-family: "Lato", sans-serif;
   padding: 0;
@@ -378,75 +297,6 @@ a {
   width: 530px;
   max-width: 100%;
   margin: 0 auto;
-}
-
-.help {
-  position: fixed;
-  top: 5px;
-  left: 5px;
-  background: #666;
-  border-radius: 50%;
-  width: 26px;
-  font-size: 16px;
-  line-height: 23px;
-  color: white;
-  border: none;
-  appearance: none;
-  text-align: center;
-  padding: 3px 0 0;
-
-  &:hover {
-    background: #555;
-  }
-}
-
-.small {
-  font-size: 10px;
-  line-height: 12px;
-}
-
-.popup {
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  z-index: 10;
-  background: #00000050;
-  opacity: 0;
-  transition: all 1s;
-
-  &.active {
-    opacity: 1;
-  }
-
-  & > div {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 1;
-    background: #fff;
-    border-radius: 6px;
-    padding: 20px 20px 40px;
-    width: 85%;
-    max-width: 300px;
-    text-align: center;
-
-    .close {
-      background: none;
-      color: #000;
-    }
-
-    .title {
-      text-align: center;
-      margin: 0 auto;
-    }
-  }
-}
-
-.msg {
-  text-align: center;
 }
 
 .logo {
@@ -469,6 +319,7 @@ a {
     filter: brightness(0);
     transition: all 1s;
     pointer-events: none;
+    aspect-ratio: 1;
 
     &.active {
       filter: none;
@@ -513,7 +364,7 @@ a {
 
     @for $i from 1 through 5 {
       &:nth-of-type(#{$i}) {
-        transform: translateY($i * 30px);
+        transform: translateY($i * 10px);
       }
     }
 
@@ -590,24 +441,6 @@ a {
 button {
   border: 0;
   appearance: none;
-}
-
-.share {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 10px auto 20px;
-
-  a,
-  .btn {
-    width: 35px;
-    height: 35px;
-    margin: 0 3px;
-
-    &:hover {
-      transform: scale(1.1);
-    }
-  }
 }
 
 .close {

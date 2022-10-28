@@ -31,11 +31,13 @@
           x
         </button>
         <h2 class="title">{{ $t("help.title") }}</h2>
-        <p>{{$t("help.description")}}</p>
-        <p><strong>{{$t("help.strong")}}</strong></p>
-        <p class="small">{{$t("help.version")}} {{ version }}</p>
+        <p>{{ $t("help.description") }}</p>
+        <p>
+          <strong>{{ $t("help.strong") }}</strong>
+        </p>
+        <p class="small">{{ $t("help.version") }} {{ version }}</p>
         <p class="small">
-          {{$t("help.legal")}}
+          {{ $t("help.legal") }}
         </p>
         <GitHub />
       </div>
@@ -66,3 +68,70 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.small {
+  font-size: 10px;
+  line-height: 12px;
+}
+
+.help {
+  position: fixed;
+  top: 5px;
+  left: 5px;
+  background: #666;
+  border-radius: 50%;
+  width: 26px;
+  font-size: 16px;
+  line-height: 23px;
+  color: white;
+  border: none;
+  appearance: none;
+  text-align: center;
+  padding: 3px 0 0;
+
+  &:hover {
+    background: #555;
+  }
+}
+
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 10;
+  background: #00000050;
+  opacity: 0;
+  transition: all 1s;
+
+  &.active {
+    opacity: 1;
+  }
+
+  & > div {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    background: #fff;
+    border-radius: 6px;
+    padding: 20px 20px 40px;
+    width: 85%;
+    max-width: 300px;
+    text-align: center;
+
+    .close {
+      background: none;
+      color: #000;
+    }
+
+    .title {
+      text-align: center;
+      margin: 0 auto;
+    }
+  }
+}
+</style>
