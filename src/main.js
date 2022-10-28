@@ -15,6 +15,7 @@ const messages = {
       legal:
         "Pokémon y los nombres de los personajes de Pokémon son marcas comerciales de Nintendo.",
     },
+    question: "¿Qué Pokémon es?",
   },
   en: {
     help: {
@@ -25,6 +26,7 @@ const messages = {
       version: "Version",
       legal: "Pokémon and Pokémon character names are trademarks of Nintendo.",
     },
+    question: "What Pokémon is it?",
   },
 };
 

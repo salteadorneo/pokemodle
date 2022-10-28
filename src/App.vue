@@ -48,7 +48,7 @@
       <div>
         <input
           v-model="input"
-          placeholder="¿Qué Pokémon es?"
+          :placeholder="$t('question')"
           class="textInput"
           :class="{ 'error-shake': errorShake }"
           readonly
