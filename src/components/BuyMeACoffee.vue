@@ -13,8 +13,8 @@
 .buymeacoffee {
   position: fixed;
   bottom: 5px;
-  right: 5px;
-  z-index: 999;
+  left: 5px;
+  z-index: 1;
 }
 @media (max-width: 950px) {
   .buymeacoffee {

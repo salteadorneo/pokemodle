@@ -20,6 +20,7 @@
           active: win,
           disappear: !intents && !pokemon.active,
         }"
+        fetchPriority="high"
         draggable="false"
       />
     </div>
@@ -57,22 +58,25 @@
         </div>
       </div>
 
-      <div class="pokeballs">
-        <img
-          v-for="item in intents"
-          v-bind:key="item + 1000"
-          src="./assets/pokeball.png"
-          alt=""
-          class="pokeball"
-        />
-        <img
-          v-for="item in 5 - intents"
-          v-bind:key="item + 2000"
-          src="./assets/pokeball.png"
-          alt=""
-          class="pokeball disabled"
-        />
-      </div>
+      <section class="pokeballs">
+        <p>{{ $t("attempts") }}</p>
+        <div class="intents">
+          <img
+            v-for="item in intents"
+            v-bind:key="item + 1000"
+            src="./assets/pokeball.png"
+            alt=""
+            class="pokeball"
+          />
+          <img
+            v-for="item in 5 - intents"
+            v-bind:key="item + 2000"
+            src="./assets/pokeball.png"
+            alt=""
+            class="pokeball disabled"
+          />
+        </div>
+      </section>
     </div>
 
     <ResultModal
@@ -89,7 +93,8 @@
 </template>
 
 <script>
-import axios from "axios";
+import splitbee from "@splitbee/web";
+
 import moment from "moment";
 
 import HelpModal from "./components/HelpModal.vue";
@@ -123,12 +128,12 @@ export default {
   },
   mounted() {
     if (!localStorage.pokedex) {
-      axios
-        .get("https://pokeapi.co/api/v2/pokemon?limit=151&offset=0")
-        .then((res) => {
-          this.pokedex = res.data.results;
+      fetch("https://pokeapi.co/api/v2/pokemon?limit=151&offset=0")
+        .then((response) => response.json())
+        .then((data) => {
+          this.pokedex = data.results;
 
-          localStorage.pokedex = JSON.stringify(this.pokedex);
+          localStorage.pokedex = JSON.stringify(data.results);
 
           this.randomPokemon();
         });
@@ -199,6 +204,10 @@ export default {
           this.pokemon.name +
           "! "
       );
+
+      splitbee.track("Pokedex", {
+        pokedex: this.pokedex.filter((p) => p.active).length,
+      });
     },
     checkPokemon() {
       if (!this.intents || !this.input) return;
@@ -231,6 +240,10 @@ export default {
         localStorage.pokedex = JSON.stringify(this.pokedex);
 
         this.randomPokemon();
+
+        splitbee.track("Catch", {
+          pokemon: this.pokemon.name,
+        });
       } else {
         this.intents--;
 
@@ -238,6 +251,12 @@ export default {
           window.navigator.vibrate(200);
         } catch (e) {
           console.log(e);
+        }
+
+        if (!this.intents) {
+          splitbee.track("Flee", {
+            pokemon: this.pokemon.name,
+          });
         }
       }
       localStorage.intents = this.intents;
@@ -282,10 +301,14 @@ export default {
 
 body {
   font-family: "Lato", sans-serif;
-  padding: 0;
+  padding: 20px 0 0;
   margin: 0;
   background: #f5f5f5;
   overflow-x: hidden;
+
+  &::-webkit-scrollbar {
+    width: 0;
+  }
 }
 
 a {
@@ -302,7 +325,11 @@ a {
   display: block;
   max-width: 80%;
   max-height: 120px;
-  margin: 20px auto 0;
+  margin: 0 auto;
+
+  &:hover {
+    transform: scale(1.05);
+  }
 }
 
 .scene {
@@ -349,28 +376,34 @@ a {
 }
 
 .pokeballs {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  font-size: 12px;
+  text-align: center;
+  color: #888;
   margin: 15px auto 0;
 
-  .pokeball {
-    width: 40px;
-    position: relative;
-    transition: all 1s;
-    opacity: 0;
-    animation: top 2s ease-out forwards;
+  & > .intents {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-    @for $i from 1 through 5 {
-      &:nth-of-type(#{$i}) {
-        transform: translateY($i * 10px);
+    .pokeball {
+      width: 40px;
+      position: relative;
+      transition: all 1s;
+      opacity: 0;
+      animation: top 2s ease-out forwards;
+
+      @for $i from 1 through 5 {
+        &:nth-of-type(#{$i}) {
+          transform: translateY($i * 10px);
+        }
       }
-    }
 
-    &.disabled {
-      transform: none;
-      animation: none;
-      opacity: 0.3 !important;
+      &.disabled {
+        transform: none;
+        animation: none;
+        opacity: 0.3 !important;
+      }
     }
   }
 }

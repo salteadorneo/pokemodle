@@ -83,6 +83,10 @@ export default {
       outline: none;
       border: 0;
       margin: 2px;
+
+      &:hover {
+        background: #555;
+      }
     }
   }
 }
