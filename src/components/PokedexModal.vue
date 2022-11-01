@@ -181,6 +181,8 @@
 export default {
   props: {
     pokedex: Array,
+    win: Boolean,
+    pokemon: Object,
   },
   data() {
     return {
@@ -190,6 +192,19 @@ export default {
   methods: {
     getPokenumber(v) {
       return ("000" + v).slice(-3);
+    },
+  },
+  watch: {
+    hidePokedex() {
+      this.$gtag.pageview("/pokedex");
+      if (this.win) {
+        setTimeout(() => {
+          const element = document.querySelector(
+            "#pokemon" + this.getPokenumber(this.pokemon.id)
+          );
+          element.scrollIntoView({ behavior: "smooth", block: "center" });
+        }, 1000);
+      }
     },
   },
 };

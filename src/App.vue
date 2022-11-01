@@ -3,7 +3,7 @@
     <HelpModal />
 
     <Languages v-if="false" />
-    <PokedexModal :pokedex="pokedex" />
+    <PokedexModal :pokedex="pokedex" :win="win" :pokemon="pokemon" />
 
     <img src="./assets/logo.png" alt="Pokemodle" class="logo" />
 
@@ -139,18 +139,6 @@ export default {
   methods: {
     getPokenumber(v) {
       return ("000" + v).slice(-3);
-    },
-    setPokedex() {
-      this.$gtag.pageview("/pokedex");
-
-      if (this.win) {
-        setTimeout(() => {
-          const element = document.querySelector(
-            "#pokemon" + this.getPokenumber(this.pokemon.id)
-          );
-          element.scrollIntoView({ behavior: "smooth", block: "center" });
-        }, 1000);
-      }
     },
     setAndValidate(v) {
       this.input = v.name;
