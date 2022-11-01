@@ -50,6 +50,8 @@
   </section>
 </template>
 <script>
+import splitbee from "@splitbee/web";
+
 import TwitterIcon from "./icons/TwitterIcon.vue";
 import WhatsappIcon from "./icons/WhatsappIcon.vue";
 import TelegramIcon from "./icons/TelegramIcon.vue";
@@ -74,6 +76,9 @@ export default {
         event_category: "share",
         event_label: e,
         value: this.pokemon.name,
+      });
+      splitbee.track("Share", {
+        mode: e,
       });
     },
     clipboard() {

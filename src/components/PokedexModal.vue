@@ -1,7 +1,7 @@
 <template>
   <div>
     <button
-      @click.prevent="hidePokedex = false"
+      @click.prevent="hidePokedex = !hidePokedex"
       :class="{ tab: true, active: !hidePokedex }"
     >
       Pokédex
@@ -44,11 +44,15 @@
   transform: translateY(-50%) rotate(-90deg);
   z-index: 2;
   color: white;
-  cursor: pointer;
   font-size: 15px;
   padding: 0 15px 0 0;
-  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
   transition: all 0.5s;
+
+  &:hover {
+    &:before {
+      border-bottom-color: #d51a21;
+    }
+  }
 
   &.active {
     transform: translate3d(-500px, -50%, 0) rotate(-90deg);
@@ -72,10 +76,6 @@
     border-bottom: 40px solid #ed1e24;
     border-left: 0 solid transparent;
     padding-right: 30px;
-  }
-
-  &:hover {
-    background: #bb171c;
   }
 }
 
@@ -178,6 +178,8 @@
 </style>
 
 <script>
+import splitbee from "@splitbee/web";
+
 export default {
   props: {
     pokedex: Array,
@@ -196,7 +198,9 @@ export default {
   },
   watch: {
     hidePokedex() {
+      splitbee.track("ShowPokedex");
       this.$gtag.pageview("/pokedex");
+
       if (this.win) {
         setTimeout(() => {
           const element = document.querySelector(

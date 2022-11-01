@@ -1,6 +1,9 @@
 import Vue from "vue";
 import VueI18n from "vue-i18n";
 
+import splitbee from "@splitbee/web";
+splitbee.init({ token: "QKJZNPQK9M2X", disableCookie: true });
+
 import App from "./App.vue";
 
 Vue.use(VueI18n);
@@ -16,6 +19,7 @@ const messages = {
         "Pokémon y los nombres de los personajes de Pokémon son marcas comerciales de Nintendo.",
     },
     question: "¿Qué Pokémon es?",
+    attempts: "Intentos",
   },
   en: {
     help: {
@@ -27,6 +31,7 @@ const messages = {
       legal: "Pokémon and Pokémon character names are trademarks of Nintendo.",
     },
     question: "What Pokémon is it?",
+    attempts: "Attempts",
   },
 };
 
