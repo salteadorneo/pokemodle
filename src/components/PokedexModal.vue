@@ -27,7 +27,9 @@
             "
             alt=""
           />
-          <h2>{{ getPokenumber(index + 1) }}<br />{{ pokemon.name }}</h2>
+          <h2 class="name">
+            {{ getPokenumber(index + 1) }}<br />{{ pokemon.name }}
+          </h2>
         </div>
       </div>
     </div>
@@ -44,7 +46,7 @@
   color: white;
   cursor: pointer;
   font-size: 15px;
-  padding: 0 15px 0 0px;
+  padding: 0 15px 0 0;
   box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
   transition: all 0.5s;
 
@@ -75,15 +77,6 @@
   &:hover {
     background: #bb171c;
   }
-
-  &.rounded {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    padding: 0;
-    text-align: center;
-  }
 }
 
 .close {
@@ -100,10 +93,10 @@
 }
 
 .counter {
-  font-size: 40px;
+  font-size: 30px;
   color: white;
   font-weight: bold;
-  opacity: 0.2;
+  opacity: 0.1;
   text-align: right;
   padding: 0 25px;
   margin-top: -80px;
@@ -175,6 +168,10 @@
       filter: brightness(0) invert(1);
       opacity: 0.05;
       transition: all 1s;
+    }
+
+    .name {
+      text-transform: capitalize;
     }
   }
 }

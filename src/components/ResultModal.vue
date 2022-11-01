@@ -50,10 +50,10 @@
   </section>
 </template>
 <script>
-import TwitterIcon from "./TwitterIcon.vue";
-import WhatsappIcon from "./WhatsappIcon.vue";
-import TelegramIcon from "./TelegramIcon.vue";
-import CopyIcon from "./CopyIcon.vue";
+import TwitterIcon from "./icons/TwitterIcon.vue";
+import WhatsappIcon from "./icons/WhatsappIcon.vue";
+import TelegramIcon from "./icons/TelegramIcon.vue";
+import CopyIcon from "./icons/CopyIcon.vue";
 
 export default {
   props: {
@@ -108,5 +108,16 @@ export default {
       transform: scale(1.1);
     }
   }
+}
+
+.rounded {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  padding: 0;
+  text-align: center;
+  color: white;
+  background: #ed1e24;
 }
 </style>
