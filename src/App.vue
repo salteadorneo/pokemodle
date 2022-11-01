@@ -1,70 +1,11 @@
 <template>
   <div id="app">
-    <button
-      v-on:click="
-        () => {
-          this.helped = true;
-        }
-      "
-      class="help"
-    >
-      ?
-    </button>
-    <div
-      v-if="helped"
-      class="popup active"
-      v-on:click="
-        () => {
-          this.helped = false;
-        }
-      "
-    >
-      <div>
-        <button
-          v-on:click="
-            () => {
-              this.helped = false;
-            }
-          "
-          class="close"
-        >
-          x
-        </button>
-        <h2 class="title">{{ $t("help.title") }}</h2>
-        <p>Adivina el Pokémon oculto y atrápalo. Tienes 5 intentos.</p>
-        <p><strong>¡Un nuevo Pokémon cada día!</strong></p>
-        <p class="small">Versión {{ version }}</p>
-        <p class="small">
-          Pokémon y los nombres de los personajes de Pokémon son marcas
-          comerciales de Nintendo.
-        </p>
-        <GitHub />
-      </div>
-    </div>
+    <HelpModal />
 
     <Languages v-if="false" />
+    <PokedexModal :pokedex="pokedex" :win="win" :pokemon="pokemon" />
 
     <img src="./assets/logo.png" alt="Pokemodle" class="logo" />
-
-    <div :class="{ pokedex: true, active: showPokedex }">
-      <button @click="showPokedex = false" class="close">x</button>
-      <div
-        v-for="(pokemon, index) in pokedex"
-        v-bind:key="index"
-        :class="{ pokemon: true, active: pokemon.active }"
-        :id="'pokemon' + getPokenumber(index + 1)"
-      >
-        <img
-          loading="lazy"
-          :srcset="
-            'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/' +
-            (index + 1) +
-            '.png'
-          "
-        />
-        <h2>{{ getPokenumber(index + 1) }}<br />{{ pokemon.name }}</h2>
-      </div>
-    </div>
 
     <div class="scene" v-if="pokemon.id">
       <img
@@ -73,6 +14,7 @@
           pokemon.id +
           '.png'
         "
+        alt=""
         :class="{
           pokemon: true,
           active: win,
@@ -86,7 +28,7 @@
       <div>
         <input
           v-model="input"
-          placeholder="¿Qué Pokémon es?"
+          :placeholder="$t('question')"
           class="textInput"
           :class="{ 'error-shake': errorShake }"
           readonly
@@ -120,69 +62,25 @@
           v-for="item in intents"
           v-bind:key="item + 1000"
           src="./assets/pokeball.png"
+          alt=""
           class="pokeball"
         />
         <img
           v-for="item in 5 - intents"
           v-bind:key="item + 2000"
           src="./assets/pokeball.png"
+          alt=""
           class="pokeball disabled"
         />
       </div>
-
-      <br />
-      <button @click.prevent="setPokedex" class="btn centered">Pokédex</button>
     </div>
 
-    <div v-if="win && !showPokedex" class="msg">
-      <div>
-        <h2 class="title">¡Enhorabuena!</h2>
-        <p>Has atrapado tu Pokémon diario.</p>
-
-        <div class="share">
-          <a
-            :href="
-              'https://twitter.com/intent/tweet?url=https%3A%2F%2Fpokemodle.salteadorneo.dev%2F&text=' +
-              shareText
-            "
-            target="_blank"
-            @click="setEvent('twitter')"
-            ><TwitterIcon
-          /></a>
-          <a
-            :href="
-              'https://api.whatsapp.com/send?text=' +
-              shareText +
-              'https%3A%2F%2Fpokemodle.salteadorneo.dev%2F'
-            "
-            target="_blank"
-            @click="setEvent('whatsapp')"
-            ><WhatsappIcon
-          /></a>
-          <a
-            :href="
-              'https://telegram.me/share/url?url=https%3A%2F%2Fpokemodle.salteadorneo.dev%2F&text=' +
-              shareText
-            "
-            target="_blank"
-            @click="setEvent('telegram')"
-            ><TelegramIcon
-          /></a>
-          <button @click="clipboard" class="btn rounded"><CopyIcon /></button>
-        </div>
-
-        <button @click="setPokedex" class="btn">Pokédex</button>
-        <p>Vuelve mañana para encontrar otro.</p>
-      </div>
-    </div>
-
-    <div v-if="!win && !intents && !showPokedex" class="msg">
-      <div>
-        <h2 class="title">¡Se te ha escapado!</h2>
-        <p>Vuelve mañana para encontrar otro.</p>
-        <button @click="setPokedex" class="btn">Pokédex</button>
-      </div>
-    </div>
+    <ResultModal
+      :pokemon="pokemon"
+      :shareText="shareText"
+      :win="win"
+      :intents="intents"
+    />
 
     <FixKeyboard @setKey="(v) => setKey(v)" v-if="!win && intents" />
 
@@ -194,46 +92,33 @@
 import axios from "axios";
 import moment from "moment";
 
-import GitHub from "./components/GitHub.vue";
+import HelpModal from "./components/HelpModal.vue";
 import Languages from "./components/Languages.vue";
-
+import PokedexModal from "./components/PokedexModal.vue";
+import ResultModal from "./components/ResultModal.vue";
 import FixKeyboard from "./components/FixKeyboard.vue";
-
-import TwitterIcon from "./components/TwitterIcon.vue";
-import WhatsappIcon from "./components/WhatsappIcon.vue";
-import TelegramIcon from "./components/TelegramIcon.vue";
-import CopyIcon from "./components/CopyIcon.vue";
-
 import BuyMeACoffee from "./components/BuyMeACoffee.vue";
-
-import packageInfo from "../package.json";
-const { version } = packageInfo;
 
 export default {
   name: "App",
   data() {
     return {
-      version,
       pokedex: localStorage.pokedex ? JSON.parse(localStorage.pokedex) : [],
       pokemon: {},
       intents: localStorage.intents ? parseInt(localStorage.intents) : 5,
       win: false,
       input: "",
-      showPokedex: false,
-      helped: false,
       errorShake: false,
       shareText: "",
     };
   },
   computed: {},
   components: {
+    HelpModal,
     Languages,
-    GitHub,
+    PokedexModal,
+    ResultModal,
     FixKeyboard,
-    TwitterIcon,
-    WhatsappIcon,
-    TelegramIcon,
-    CopyIcon,
     BuyMeACoffee,
   },
   mounted() {
@@ -245,8 +130,6 @@ export default {
 
           localStorage.pokedex = JSON.stringify(this.pokedex);
 
-          this.helped = true;
-
           this.randomPokemon();
         });
     } else this.randomPokemon();
@@ -254,45 +137,8 @@ export default {
     document.body.addEventListener("keyup", this.keyup);
   },
   methods: {
-    setEvent(e) {
-      this.$gtag.event("event", {
-        event_category: "share",
-        event_label: e,
-        value: this.pokemon.name,
-      });
-    },
-    clipboard() {
-      navigator.clipboard.writeText(
-        decodeURIComponent(
-          this.shareText + " https%3A%2F%2Fpokemodle.salteadorneo.dev%2F"
-        )
-      );
-
-      this.$gtag.event("event", {
-        event_category: "share",
-        event_label: "clipboard",
-        value: this.pokemon.name,
-      });
-    },
-    closePopup() {
-      this.helped = false;
-    },
     getPokenumber(v) {
       return ("000" + v).slice(-3);
-    },
-    setPokedex() {
-      this.showPokedex = true;
-
-      this.$gtag.pageview("/pokedex");
-
-      if (this.win) {
-        setTimeout(() => {
-          var element = document.querySelector(
-            "#pokemon" + this.getPokenumber(this.pokemon.id)
-          );
-          element.scrollIntoView({ behavior: "smooth", block: "center" });
-        }, 1000);
-      }
     },
     setAndValidate(v) {
       this.input = v.name;
@@ -402,15 +248,36 @@ export default {
 </script>
 
 <style lang="scss">
-@import url("https://fonts.googleapis.com/css2?family=Lato:wght@300&display=swap");
+@font-face {
+  font-family: "Lato";
+  src: url("./fonts/Lato-Bold.woff2") format("woff2"),
+    url("./fonts/Lato-Bold.woff") format("woff");
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Lato";
+  src: url("./fonts/Lato-Light.woff2") format("woff2"),
+    url("./fonts/Lato-Light.woff") format("woff");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Lato";
+  src: url("./fonts/Lato-Regular.woff2") format("woff2"),
+    url("./fonts/Lato-Regular.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
 
 * {
   box-sizing: border-box;
   user-select: none;
-}
-
-button {
-  cursor: pointer;
 }
 
 body {
@@ -418,6 +285,7 @@ body {
   padding: 0;
   margin: 0;
   background: #f5f5f5;
+  overflow-x: hidden;
 }
 
 a {
@@ -428,75 +296,6 @@ a {
   width: 530px;
   max-width: 100%;
   margin: 0 auto;
-}
-
-.help {
-  position: fixed;
-  top: 5px;
-  left: 5px;
-  background: #666;
-  border-radius: 50%;
-  width: 26px;
-  font-size: 16px;
-  line-height: 23px;
-  color: white;
-  border: none;
-  appearance: none;
-  text-align: center;
-  padding: 3px 0 0;
-
-  &:hover {
-    background: #555;
-  }
-}
-
-.small {
-  font-size: 10px;
-  line-height: 12px;
-}
-
-.popup {
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  z-index: 10;
-  background: #00000050;
-  opacity: 0;
-  transition: all 1s;
-
-  &.active {
-    opacity: 1;
-  }
-
-  & > div {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 1;
-    background: #fff;
-    border-radius: 6px;
-    padding: 20px 20px 40px;
-    width: 85%;
-    max-width: 300px;
-    text-align: center;
-
-    .close {
-      background: none;
-      color: #000;
-    }
-
-    .title {
-      text-align: center;
-      margin: 0 auto;
-    }
-  }
-}
-
-.msg {
-  text-align: center;
 }
 
 .logo {
@@ -519,6 +318,7 @@ a {
     filter: brightness(0);
     transition: all 1s;
     pointer-events: none;
+    aspect-ratio: 1;
 
     &.active {
       filter: none;
@@ -563,7 +363,7 @@ a {
 
     @for $i from 1 through 5 {
       &:nth-of-type(#{$i}) {
-        transform: translateY($i * 30px);
+        transform: translateY($i * 10px);
       }
     }
 
@@ -579,32 +379,6 @@ a {
   100% {
     transform: translateY(0);
     opacity: 1;
-  }
-}
-
-.btn {
-  background: #ed1e24;
-  color: white;
-  border-radius: 6px;
-  padding: 10px 30px;
-  cursor: pointer;
-
-  &:hover {
-    background: #bb171c;
-  }
-
-  &.centered {
-    display: block;
-    margin: 0 auto;
-  }
-
-  &.rounded {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    padding: 0;
-    text-align: center;
   }
 }
 
@@ -640,101 +414,6 @@ a {
 button {
   border: 0;
   appearance: none;
-}
-
-.share {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 10px auto 20px;
-
-  a,
-  .btn {
-    width: 35px;
-    height: 35px;
-    margin: 0 3px;
-
-    &:hover {
-      transform: scale(1.1);
-    }
-  }
-}
-
-.close {
-  position: fixed;
-  top: 0;
-  right: 0;
-  z-index: 2;
-  color: white;
-  text-decoration: none;
-  font-size: 28px;
-  font-weight: 600;
-  padding: 5px 15px;
-  background: none;
-}
-
-.pokedex {
-  position: fixed;
-  top: 100vh;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 2;
-  width: 100%;
-  max-width: 500px;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: flex-end;
-  background: url(./assets/pokedex.png) no-repeat left top #ed1e24;
-  padding-top: 140px;
-  opacity: 0;
-  transition: top 0.5s, opacity 0.5s;
-
-  &.active {
-    position: absolute;
-    top: 0;
-    opacity: 1;
-
-    & > div {
-      transform: translateY(0) !important;
-      opacity: 1;
-    }
-  }
-
-  .pokemon {
-    flex-basis: 25%;
-    font-size: 9px;
-    text-align: center;
-    color: white;
-    position: relative;
-    transition: all 1s;
-    opacity: 0;
-    min-height: 145px;
-
-    @for $i from 1 through 151 {
-      &:nth-of-type(#{$i}) {
-        transform: translateY($i * 100px);
-      }
-    }
-
-    @media (max-width: 480px) {
-      flex-basis: 33%;
-    }
-
-    &.active {
-      img {
-        filter: none;
-        opacity: 1;
-      }
-    }
-
-    img {
-      max-width: 70%;
-      filter: brightness(0) invert(1);
-      opacity: 0.05;
-      transition: all 1s;
-    }
-  }
 }
 
 .error-shake {

@@ -2,8 +2,6 @@
   <a href="https://github.com/salteadorneo/pokemodle" target="__blank">
     <svg
       class="github"
-      width="256"
-      height="250"
       viewBox="0 0 256 250"
       fill="currentColor"
       xmlns="http://www.w3.org/2000/svg"
@@ -14,18 +12,28 @@
         fill="#545454"
       />
     </svg>
+    salteadorneo/pokemodle
   </a>
 </template>
 
 <style scoped>
+a {
+  text-decoration: none;
+  font-size: 12px;
+  color: #7c7c7c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .github {
-  position: fixed;
+  /* position: fixed;
   bottom: 15px;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50%); */
   width: 25px;
   height: 25px;
   opacity: .7;
+  margin-right: 5px;
 }
 
 .github:hover {

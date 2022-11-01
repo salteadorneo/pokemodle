@@ -9,17 +9,30 @@ const messages = {
   es: {
     help: {
       title: "Cómo jugar",
+      description: "Adivina el Pokémon oculto y atrápalo. Tienes 5 intentos.",
+      strong: "¡Un nuevo Pokémon cada día!",
+      version: "Versión",
+      legal:
+        "Pokémon y los nombres de los personajes de Pokémon son marcas comerciales de Nintendo.",
     },
+    question: "¿Qué Pokémon es?",
   },
   en: {
     help: {
       title: "How to play",
+      description:
+        "Guess the hidden Pokémon and catch it. You have 5 attempts.",
+      strong: "A new Pokémon every day!",
+      version: "Version",
+      legal: "Pokémon and Pokémon character names are trademarks of Nintendo.",
     },
+    question: "What Pokémon is it?",
   },
 };
 
 const i18n = new VueI18n({
-  locale: "es",
+  locale:
+    navigator.language.split("-")[0] || navigator.userLanguage.split("-")[0],
   messages,
 });
 
