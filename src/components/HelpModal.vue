@@ -132,8 +132,16 @@ export default {
     text-align: center;
 
     .close {
-      background: none;
+      position: fixed;
+      top: 0;
+      right: 0;
+      z-index: 2;
       color: #000;
+      text-decoration: none;
+      font-size: 28px;
+      font-weight: 600;
+      padding: 5px 15px;
+      background: none;
     }
 
     .title {

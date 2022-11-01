@@ -3,29 +3,9 @@
     <HelpModal />
 
     <Languages v-if="false" />
+    <PokedexModal :pokedex="pokedex" />
 
     <img src="./assets/logo.png" alt="Pokemodle" class="logo" />
-
-    <div :class="{ pokedex: true, active: showPokedex }">
-      <button @click="showPokedex = false" class="close">x</button>
-      <div
-        v-for="(pokemon, index) in pokedex"
-        v-bind:key="index"
-        :class="{ pokemon: true, active: pokemon.active }"
-        :id="'pokemon' + getPokenumber(index + 1)"
-      >
-        <img
-          loading="lazy"
-          :srcset="
-            'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/' +
-            (index + 1) +
-            '.png'
-          "
-          alt=""
-        />
-        <h2>{{ getPokenumber(index + 1) }}<br />{{ pokemon.name }}</h2>
-      </div>
-    </div>
 
     <div class="scene" v-if="pokemon.id">
       <img
@@ -93,18 +73,13 @@
           class="pokeball disabled"
         />
       </div>
-
-      <br />
-      <button @click.prevent="setPokedex" class="btn centered">Pokédex</button>
     </div>
 
     <ResultModal
-      v-if="!showPokedex"
       :pokemon="pokemon"
       :shareText="shareText"
       :win="win"
       :intents="intents"
-      :setPokedex="setPokedex"
     />
 
     <FixKeyboard @setKey="(v) => setKey(v)" v-if="!win && intents" />
@@ -119,6 +94,7 @@ import moment from "moment";
 
 import HelpModal from "./components/HelpModal.vue";
 import Languages from "./components/Languages.vue";
+import PokedexModal from "./components/PokedexModal.vue";
 import ResultModal from "./components/ResultModal.vue";
 import FixKeyboard from "./components/FixKeyboard.vue";
 import BuyMeACoffee from "./components/BuyMeACoffee.vue";
@@ -132,7 +108,6 @@ export default {
       intents: localStorage.intents ? parseInt(localStorage.intents) : 5,
       win: false,
       input: "",
-      showPokedex: false,
       errorShake: false,
       shareText: "",
     };
@@ -141,6 +116,7 @@ export default {
   components: {
     HelpModal,
     Languages,
+    PokedexModal,
     ResultModal,
     FixKeyboard,
     BuyMeACoffee,
@@ -165,8 +141,6 @@ export default {
       return ("000" + v).slice(-3);
     },
     setPokedex() {
-      this.showPokedex = true;
-
       this.$gtag.pageview("/pokedex");
 
       if (this.win) {
@@ -323,6 +297,7 @@ body {
   padding: 0;
   margin: 0;
   background: #f5f5f5;
+  overflow-x: hidden;
 }
 
 a {
@@ -419,32 +394,6 @@ a {
   }
 }
 
-.btn {
-  background: #ed1e24;
-  color: white;
-  border-radius: 6px;
-  padding: 10px 30px;
-  cursor: pointer;
-
-  &:hover {
-    background: #bb171c;
-  }
-
-  &.centered {
-    display: block;
-    margin: 0 auto;
-  }
-
-  &.rounded {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    padding: 0;
-    text-align: center;
-  }
-}
-
 .autocomplete {
   position: absolute;
   left: 50%;
@@ -477,83 +426,6 @@ a {
 button {
   border: 0;
   appearance: none;
-}
-
-.close {
-  position: fixed;
-  top: 0;
-  right: 0;
-  z-index: 2;
-  color: white;
-  text-decoration: none;
-  font-size: 28px;
-  font-weight: 600;
-  padding: 5px 15px;
-  background: none;
-}
-
-.pokedex {
-  position: fixed;
-  top: 100vh;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 2;
-  width: 100%;
-  max-width: 500px;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: flex-end;
-  background: url(./assets/pokedex.png) no-repeat left top #ed1e24;
-  padding-top: 140px;
-  opacity: 0;
-  transition: top 0.5s, opacity 0.5s;
-
-  &.active {
-    position: absolute;
-    top: 0;
-    opacity: 1;
-
-    & > div {
-      transform: translateY(0) !important;
-      opacity: 1;
-    }
-  }
-
-  .pokemon {
-    flex-basis: 25%;
-    font-size: 9px;
-    text-align: center;
-    color: white;
-    position: relative;
-    transition: all 1s;
-    opacity: 0;
-    min-height: 145px;
-
-    @for $i from 1 through 151 {
-      &:nth-of-type(#{$i}) {
-        transform: translateY($i * 100px);
-      }
-    }
-
-    @media (max-width: 480px) {
-      flex-basis: 33%;
-    }
-
-    &.active {
-      img {
-        filter: none;
-        opacity: 1;
-      }
-    }
-
-    img {
-      max-width: 70%;
-      filter: brightness(0) invert(1);
-      opacity: 0.05;
-      transition: all 1s;
-    }
-  }
 }
 
 .error-shake {

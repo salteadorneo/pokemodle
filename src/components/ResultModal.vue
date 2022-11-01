@@ -37,7 +37,6 @@
           <button @click="clipboard" class="btn rounded"><CopyIcon /></button>
         </div>
 
-        <button @click="setPokedex" class="btn">Pokédex</button>
         <p>Vuelve mañana para encontrar otro.</p>
       </div>
     </div>
@@ -46,7 +45,6 @@
       <div>
         <h2 class="title">¡Se te ha escapado!</h2>
         <p>Vuelve mañana para encontrar otro.</p>
-        <button @click="setPokedex" class="btn">Pokédex</button>
       </div>
     </div>
   </section>
@@ -62,7 +60,6 @@ export default {
     pokemon: Object,
     win: Boolean,
     intents: Number,
-    setPokedex: { type: Function },
     shareText: String,
   },
   components: {
