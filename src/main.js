@@ -20,6 +20,10 @@ const messages = {
     },
     question: "¿Qué Pokémon es?",
     attempts: "Intentos",
+    congratulations: "¡Enhorabuena!",
+    catch: "Has atrapado tu Pokémon diario.",
+    flee: "¡Se ha escapado!",
+    comeback: "Vuelve mañana para encontrar otro.",
   },
   en: {
     help: {
@@ -32,6 +36,10 @@ const messages = {
     },
     question: "What Pokémon is it?",
     attempts: "Attempts",
+    congratulations: "Congratulations!",
+    catch: "You catched your daily Pokémon.",
+    flee: "It has escaped!",
+    comeback: "Come back tomorrow to find another.",
   },
 };
 

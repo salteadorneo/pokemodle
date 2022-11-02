@@ -81,7 +81,6 @@
 
     <ResultModal
       :pokemon="pokemon"
-      :shareText="shareText"
       :win="win"
       :intents="intents"
     />
@@ -142,9 +141,6 @@ export default {
     document.body.addEventListener("keyup", this.keyup);
   },
   methods: {
-    getPokenumber(v) {
-      return ("000" + v).slice(-3);
-    },
     setAndValidate(v) {
       this.input = v.name;
       this.checkPokemon();
@@ -196,14 +192,6 @@ export default {
       }
 
       if (location.href.includes("localhost")) console.log(this.pokemon.name);
-
-      this.shareText = encodeURIComponent(
-        "Pokemodle #" +
-          this.getPokenumber(this.pokemon.id) +
-          " ¡Hoy he atrapado un " +
-          this.pokemon.name +
-          "! "
-      );
 
       splitbee.track("Pokedex", {
         pokedex: this.pokedex.filter((p) => p.active).length,

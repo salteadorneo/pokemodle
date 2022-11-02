@@ -2,8 +2,8 @@
   <section>
     <div v-if="win" class="msg">
       <div>
-        <h2 class="title">¡Enhorabuena!</h2>
-        <p>Has atrapado tu Pokémon diario.</p>
+        <h2 class="title">{{$t("congratulations")}}</h2>
+        <p>{{$t("catch")}}</p>
 
         <div class="share">
           <a
@@ -37,16 +37,18 @@
           <button @click="clipboard" class="btn rounded"><CopyIcon /></button>
         </div>
 
-        <p>Vuelve mañana para encontrar otro.</p>
+        <p>{{$t("comeback")}}</p>
       </div>
     </div>
 
     <div v-if="!win && !intents" class="msg">
       <div>
-        <h2 class="title">¡Se te ha escapado!</h2>
-        <p>Vuelve mañana para encontrar otro.</p>
+        <h2 class="title">{{$t("flee")}}</h2>
+        <p>{{$t("comeback")}}</p>
       </div>
     </div>
+
+    <BuyMeACoffee center v-if="win || (!win && !intents)" />
   </section>
 </template>
 <script>
@@ -56,21 +58,46 @@ import TwitterIcon from "./icons/TwitterIcon.vue";
 import WhatsappIcon from "./icons/WhatsappIcon.vue";
 import TelegramIcon from "./icons/TelegramIcon.vue";
 import CopyIcon from "./icons/CopyIcon.vue";
+import BuyMeACoffee from "./BuyMeACoffee.vue";
 
 export default {
   props: {
     pokemon: Object,
     win: Boolean,
     intents: Number,
-    shareText: String,
+  },
+  data() {
+    return {
+      shareText: "",
+    };
   },
   components: {
     TwitterIcon,
     WhatsappIcon,
     TelegramIcon,
     CopyIcon,
+    BuyMeACoffee,
+  },
+  watch: {
+    pokemon: function (val) {
+      this.shareText = encodeURIComponent(
+        "Pokemodle #" +
+          this.getPokenumber(val.id) +
+          " ¡Hoy he atrapado un " +
+          this.capitalize(val.name) +
+          "! "
+      );
+    },
   },
   methods: {
+    getPokenumber(v) {
+      if (!v) return "000";
+      return ("000" + v).slice(-3);
+    },
+    capitalize(val) {
+      if (!val) return "";
+      return val.charAt(0).toUpperCase() + val.slice(1);
+    },
     setEvent(e) {
       this.$gtag.event("event", {
         event_category: "share",
