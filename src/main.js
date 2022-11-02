@@ -2,7 +2,7 @@ import Vue from "vue";
 import VueI18n from "vue-i18n";
 
 import splitbee from "@splitbee/web";
-splitbee.init({ token: "QKJZNPQK9M2X", disableCookie: true });
+splitbee.init({ disableCookie: true });
 
 import App from "./App.vue";
 
