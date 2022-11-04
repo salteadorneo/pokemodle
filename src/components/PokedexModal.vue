@@ -199,7 +199,6 @@ export default {
   watch: {
     hidePokedex() {
       splitbee.track("ShowPokedex");
-      this.$gtag.pageview("/pokedex");
 
       if (this.win) {
         setTimeout(() => {
