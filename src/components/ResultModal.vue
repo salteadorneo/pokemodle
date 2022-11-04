@@ -99,11 +99,6 @@ export default {
       return val.charAt(0).toUpperCase() + val.slice(1);
     },
     setEvent(e) {
-      this.$gtag.event("event", {
-        event_category: "share",
-        event_label: e,
-        value: this.pokemon.name,
-      });
       splitbee.track("Share", {
         mode: e,
       });
