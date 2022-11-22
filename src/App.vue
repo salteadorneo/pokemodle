@@ -79,11 +79,7 @@
       </section>
     </div>
 
-    <ResultModal
-      :pokemon="pokemon"
-      :win="win"
-      :intents="intents"
-    />
+    <ResultModal :pokemon="pokemon" :win="win" :intents="intents" />
 
     <FixKeyboard @setKey="(v) => setKey(v)" v-if="!win && intents" />
 
@@ -102,6 +98,8 @@ import PokedexModal from "./components/PokedexModal.vue";
 import ResultModal from "./components/ResultModal.vue";
 import FixKeyboard from "./components/FixKeyboard.vue";
 import BuyMeACoffee from "./components/BuyMeACoffee.vue";
+
+import confetti from "canvas-confetti";
 
 export default {
   name: "App",
@@ -217,6 +215,7 @@ export default {
 
         try {
           window.navigator.vibrate(500);
+          confetti();
         } catch (e) {
           console.log(e);
         }

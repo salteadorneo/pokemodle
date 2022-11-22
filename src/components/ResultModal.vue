@@ -2,34 +2,30 @@
   <section>
     <div v-if="win" class="msg">
       <div>
-        <h2 class="title">{{$t("congratulations")}}</h2>
-        <p>{{$t("catch")}}</p>
+        <h2 class="title">{{ $t("congratulations") }}</h2>
+        <p>{{ $t("catch") }}</p>
 
         <div class="share">
           <a
-            :href="
-              'https://twitter.com/intent/tweet?url=https%3A%2F%2Fpokemodle.salteadorneo.dev%2F&text=' +
+            :href="`https://twitter.com/intent/tweet?url=https%3A%2F%2Fpokemodle.salteadorneo.dev%2F&text=${encodeURIComponent(
               shareText
-            "
+            )}`"
             target="_blank"
             @click="setEvent('twitter')"
             ><TwitterIcon
           /></a>
           <a
-            :href="
-              'https://api.whatsapp.com/send?text=' +
-              shareText +
-              'https%3A%2F%2Fpokemodle.salteadorneo.dev%2F'
-            "
+            :href="`https://api.whatsapp.com/send?text=${encodeURIComponent(
+              shareText + ' https://pokemodle.salteadorneo.dev/'
+            )}`"
             target="_blank"
             @click="setEvent('whatsapp')"
             ><WhatsappIcon
           /></a>
           <a
-            :href="
-              'https://telegram.me/share/url?url=https%3A%2F%2Fpokemodle.salteadorneo.dev%2F&text=' +
+            :href="`https://telegram.me/share/url?url=https%3A%2F%2Fpokemodle.salteadorneo.dev%2F&text=${encodeURIComponent(
               shareText
-            "
+            )}`"
             target="_blank"
             @click="setEvent('telegram')"
             ><TelegramIcon
@@ -37,14 +33,14 @@
           <button @click="clipboard" class="btn rounded"><CopyIcon /></button>
         </div>
 
-        <p>{{$t("comeback")}}</p>
+        <p>{{ $t("comeback") }}</p>
       </div>
     </div>
 
     <div v-if="!win && !intents" class="msg">
       <div>
-        <h2 class="title">{{$t("flee")}}</h2>
-        <p>{{$t("comeback")}}</p>
+        <h2 class="title">{{ $t("flee") }}</h2>
+        <p>{{ $t("comeback") }}</p>
       </div>
     </div>
 
@@ -80,13 +76,9 @@ export default {
   },
   watch: {
     pokemon: function (val) {
-      this.shareText = encodeURIComponent(
-        "Pokemodle #" +
-          this.getPokenumber(val.id) +
-          " ¡Hoy he atrapado un " +
-          this.capitalize(val.name) +
-          "! "
-      );
+      this.shareText = `Pokemodle #${this.getPokenumber(
+        val.id
+      )} ¡Hoy he atrapado un ${this.capitalize(val.name)}!`;
     },
   },
   methods: {
@@ -104,12 +96,19 @@ export default {
       });
     },
     clipboard() {
-      navigator.clipboard.writeText(
-        decodeURIComponent(
-          this.shareText + " https%3A%2F%2Fpokemodle.salteadorneo.dev%2F"
-        )
-      );
-      this.setEvent("clipboard");
+      if (navigator.canShare) {
+        navigator.share({
+          title: "Pokemodle",
+          text: this.shareText,
+          url: "https://pokemodle.salteadorneo.dev/",
+        });
+        this.setEvent("native");
+      } else {
+        navigator.clipboard.writeText(
+          this.shareText + " https://pokemodle.salteadorneo.dev/"
+        );
+        this.setEvent("clipboard");
+      }
     },
   },
 };
