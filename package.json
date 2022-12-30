@@ -6,9 +6,13 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "sync": "npx cap sync"
   },
   "dependencies": {
+    "@capacitor/android": "^4.6.1",
+    "@capacitor/assets": "^2.0.4",
+    "@capacitor/core": "^4.6.1",
     "@splitbee/web": "^0.3.0",
     "canvas-confetti": "^1.6.0",
     "core-js": "^3.8.3",
@@ -19,6 +23,7 @@
   "devDependencies": {
     "@babel/core": "^7.12.16",
     "@babel/eslint-parser": "^7.12.16",
+    "@capacitor/cli": "^4.6.1",
     "@vue/cli-plugin-babel": "~5.0.0",
     "@vue/cli-plugin-eslint": "~5.0.0",
     "@vue/cli-plugin-unit-jest": "~5.0.0",

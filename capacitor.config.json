@@ -1,0 +1,6 @@
+{
+  "appId": "dev.salteadorneo.pokemodle",
+  "appName": "Pokemodle",
+  "webDir": "dist",
+  "bundledWebRuntime": false
+}
