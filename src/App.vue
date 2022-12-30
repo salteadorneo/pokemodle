@@ -2,6 +2,8 @@
   <div id="app">
     <HelpModal />
 
+    <GooglePlay class="google-play" />
+
     <Languages v-if="false" />
     <PokedexModal :pokedex="pokedex" :win="win" :pokemon="pokemon" />
 
@@ -98,6 +100,7 @@ import PokedexModal from "./components/PokedexModal.vue";
 import ResultModal from "./components/ResultModal.vue";
 import FixKeyboard from "./components/FixKeyboard.vue";
 import BuyMeACoffee from "./components/BuyMeACoffee.vue";
+import GooglePlay from "./components/GooglePlay.vue";
 
 import confetti from "canvas-confetti";
 
@@ -122,6 +125,7 @@ export default {
     ResultModal,
     FixKeyboard,
     BuyMeACoffee,
+    GooglePlay,
   },
   mounted() {
     if (!localStorage.pokedex) {
@@ -310,12 +314,23 @@ a {
 
 .logo {
   display: block;
-  max-width: 80%;
+  max-width: 300px;
   max-height: 120px;
   margin: 0 auto;
 
   &:hover {
     transform: scale(1.05);
+  }
+}
+
+.google-play {
+  position: absolute;
+  top: 0;
+  right: 6px;
+}
+@media (max-width: 680px) {
+  .google-play {
+    display: none;
   }
 }
 
