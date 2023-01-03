@@ -35,8 +35,8 @@
         <p>
           <strong>{{ $t("help.strong") }}</strong>
         </p>
+        <hr class="line" />
         <p class="small">{{ $t("help.version") }} {{ version }}</p>
-        <GooglePlay class="google-play-mobile" />
         <GitHub />
         <p class="small">
           {{ $t("help.legal") }}
@@ -48,7 +48,6 @@
 
 <script>
 import GitHub from "./GitHub";
-import GooglePlay from "./GooglePlay";
 
 import packageInfo from "../../package.json";
 const { version } = packageInfo;
@@ -62,7 +61,6 @@ export default {
   },
   components: {
     GitHub,
-    GooglePlay,
   },
   methods: {
     closePopup() {
@@ -150,12 +148,6 @@ export default {
       text-align: center;
       margin: 0 auto;
     }
-  }
-}
-
-@media (min-width: 680px) {
-  .google-play-mobile {
-    display: none;
   }
 }
 </style>
