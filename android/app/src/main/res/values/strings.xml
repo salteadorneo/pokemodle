@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8' ?>
 <resources>
     <string name="app_name">Pokemodle</string>
-    <string name="title_activity_main">pokemodle</string>
+    <string name="title_activity_main">Pokemodle</string>
     <string name="package_name">dev.salteadorneo.pokemodle</string>
     <string name="custom_url_scheme">dev.salteadorneo.pokemodle</string>
 </resources>
