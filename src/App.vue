@@ -253,79 +253,80 @@ export default {
 };
 </script>
 
-<style lang="scss">
-@font-face {
-  font-family: "Lato";
-  src: url("./fonts/Lato-Bold.woff2") format("woff2"),
-    url("./fonts/Lato-Bold.woff") format("woff");
-  font-weight: bold;
-  font-style: normal;
-  font-display: swap;
-}
+<style>
+  @font-face {
+    font-family: "Lato";
+    src: url("./fonts/Lato-Bold.woff2") format("woff2"),
+      url("./fonts/Lato-Bold.woff") format("woff");
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+  }
 
-@font-face {
-  font-family: "Lato";
-  src: url("./fonts/Lato-Light.woff2") format("woff2"),
-    url("./fonts/Lato-Light.woff") format("woff");
-  font-weight: 300;
-  font-style: normal;
-  font-display: swap;
-}
+  @font-face {
+    font-family: "Lato";
+    src: url("./fonts/Lato-Light.woff2") format("woff2"),
+      url("./fonts/Lato-Light.woff") format("woff");
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+  }
 
-@font-face {
-  font-family: "Lato";
-  src: url("./fonts/Lato-Regular.woff2") format("woff2"),
-    url("./fonts/Lato-Regular.woff") format("woff");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
+  @font-face {
+    font-family: "Lato";
+    src: url("./fonts/Lato-Regular.woff2") format("woff2"),
+      url("./fonts/Lato-Regular.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
 
-* {
-  box-sizing: border-box;
-  user-select: none;
-}
+  * {
+    box-sizing: border-box;
+    user-select: none;
+  }
 
-body {
-  font-family: "Lato", sans-serif;
-  padding: 20px 0 0;
-  margin: 0;
-  background: #f5f5f5;
-  overflow-x: hidden;
+  body {
+    font-family: "Lato", sans-serif;
+    padding: 20px 0 0;
+    margin: 0;
+    background: #f5f5f5;
+    overflow-x: hidden;
+  }
 
-  &::-webkit-scrollbar {
+  ::-webkit-scrollbar {
     width: 0;
   }
-}
 
-a {
-  color: white;
-}
+  a {
+    color: white;
+  }
 
-#app {
-  width: 530px;
-  max-width: 100%;
-  margin: 0 auto;
-}
+  #app {
+    width: 530px;
+    max-width: 100%;
+    margin: 0 auto;
+  }
 
-.logo {
-  display: block;
-  max-width: 80%;
-  max-height: 120px;
-  margin: 0 auto;
+  .logo {
+    display: block;
+    max-width: 80%;
+    max-height: 120px;
+    margin: 0 auto;
+  }
 
-  &:hover {
+  .logo:hover {
     transform: scale(1.05);
   }
-}
 
-.scene {
-  width: 100%;
-  height: 100%;
-  margin: 0 auto;
-  text-align: center;
+  .scene {
+    width: 100%;
+    height: 100%;
+    margin: 0 auto;
+    text-align: center;
+  }
 
-  .pokemon {
+  .scene .pokemon {
     position: relative;
     max-width: 65%;
     max-height: 40vh;
@@ -333,130 +334,146 @@ a {
     transition: all 1s;
     pointer-events: none;
     aspect-ratio: 1;
+  }
 
-    &.active {
-      filter: none;
-    }
-
-    &.disappear {
-      opacity: 0;
-    }
-
-    @media (max-height: 667px) {
+  @media (max-height: 667px) {
+    .scene .pokemon {
       max-height: 30vh;
     }
   }
-}
 
-.textInput {
-  display: block;
-  width: 250px;
-  margin: 0 auto;
-  padding: 12px;
-  outline: none;
-  appearance: none;
-  background: none;
-  border: 0;
-  font-size: 18px;
-  line-height: 20px;
-  text-align: center;
-}
+  .scene .pokemon.active {
+    filter: none;
+  }
 
-.pokeballs {
-  font-size: 12px;
-  text-align: center;
-  color: #888;
-  margin: 15px auto 0;
+  .scene .pokemon.disappear {
+    filter: none;
+  }
 
-  & > .intents {
+  .textInput {
+    display: block;
+    width: 250px;
+    margin: 0 auto;
+    padding: 12px;
+    outline: none;
+    appearance: none;
+    background: none;
+    border: 0;
+    font-size: 18px;
+    line-height: 20px;
+    text-align: center;
+  }
+
+  .pokeballs {
+    font-size: 12px;
+    text-align: center;
+    color: #888;
+    margin: 15px auto 0;
+  }
+
+  .pokeballs > .intents {
     display: flex;
     align-items: center;
     justify-content: center;
+  }
 
-    .pokeball {
-      width: 40px;
-      position: relative;
-      transition: all 1s;
-      opacity: 0;
-      animation: top 2s ease-out forwards;
+  .pokeballs > .intents .pokeball {
+    width: 40px;
+    position: relative;
+    transition: all 1s;
+    opacity: 0;
+    animation: top 2s ease-out forwards;
+  }
 
-      @for $i from 1 through 5 {
-        &:nth-of-type(#{$i}) {
-          transform: translateY($i * 10px);
-        }
-      }
+  .pokeballs > .intents .pokeball:nth-of-type(1) {
+    transform: translateY(10px);
+  }
 
-      &.disabled {
-        transform: none;
-        animation: none;
-        opacity: 0.3 !important;
-      }
+  .pokeballs > .intents .pokeball:nth-of-type(2) {
+    transform: translateY(20px);
+  }
+
+  .pokeballs > .intents .pokeball:nth-of-type(3) {
+    transform: translateY(30px);
+  }
+
+  .pokeballs > .intents .pokeball:nth-of-type(4) {
+    transform: translateY(40px);
+  }
+
+  .pokeballs > .intents .pokeball:nth-of-type(5) {
+    transform: translateY(50px);
+  }
+
+  .pokeballs > .intents .pokeball.disabled {
+    transform: none;
+    animation: none;
+    opacity: 0.3 !important;
+  }
+
+  @keyframes top {
+    100% {
+      transform: translateY(0);
+      opacity: 1;
     }
   }
-}
 
-@keyframes top {
-  100% {
-    transform: translateY(0);
-    opacity: 1;
+  .autocomplete {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.99);
+    width: 250px;
+    margin: 0 auto;
+    z-index: 10;
+    overflow: hidden;
   }
-}
 
-.autocomplete {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(255, 255, 255, 0.99);
-  width: 250px;
-  margin: 0 auto;
-  z-index: 10;
-  overflow: hidden;
-
-  ul {
+  .autocomplete ul {
     display: block;
     list-style: none;
     padding: 2px 0;
     margin: 0;
     max-height: calc(30px * 4);
+  }
 
-    li {
-      font-size: 14px;
-      color: black;
-      padding: 6px 12px;
-      border: none;
-      appearance: none;
-      width: 100%;
-      border-radius: none;
+  .autocomplete ul li {
+    font-size: 14px;
+    color: black;
+    padding: 6px 12px;
+    border: none;
+    appearance: none;
+    width: 100%;
+    border-radius: none;
+  }
+
+  button {
+    border: 0;
+    appearance: none;
+  }
+
+  .error-shake {
+    animation: error_shake 0.4s 1 linear;
+  }
+
+  @keyframes error_shake {
+    0% {
+      -webkit-transform: translate(30px);
+    }
+    20% {
+      -webkit-transform: translate(-30px);
+    }
+    40% {
+      -webkit-transform: translate(15px);
+    }
+    60% {
+      -webkit-transform: translate(-15px);
+    }
+    80% {
+      -webkit-transform: translate(8px);
+    }
+    100% {
+      -webkit-transform: translate(0px);
     }
   }
-}
-
-button {
-  border: 0;
-  appearance: none;
-}
-
-.error-shake {
-  animation: error_shake 0.4s 1 linear;
-}
-@keyframes error_shake {
-  0% {
-    -webkit-transform: translate(30px);
-  }
-  20% {
-    -webkit-transform: translate(-30px);
-  }
-  40% {
-    -webkit-transform: translate(15px);
-  }
-  60% {
-    -webkit-transform: translate(-15px);
-  }
-  80% {
-    -webkit-transform: translate(8px);
-  }
-  100% {
-    -webkit-transform: translate(0px);
-  }
-}
 </style>
