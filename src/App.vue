@@ -82,8 +82,6 @@
     <ResultModal :pokemon="pokemon" :win="win" :intents="intents" />
 
     <FixKeyboard @setKey="(v) => setKey(v)" v-if="!win && intents" />
-
-    <BuyMeACoffee />
   </div>
 </template>
 
@@ -97,7 +95,6 @@ import Languages from "./components/Languages.vue";
 import PokedexModal from "./components/PokedexModal.vue";
 import ResultModal from "./components/ResultModal.vue";
 import FixKeyboard from "./components/FixKeyboard.vue";
-import BuyMeACoffee from "./components/BuyMeACoffee.vue";
 
 import confetti from "canvas-confetti";
 
@@ -121,7 +118,6 @@ export default {
     PokedexModal,
     ResultModal,
     FixKeyboard,
-    BuyMeACoffee,
   },
   mounted() {
     if (!localStorage.pokedex) {

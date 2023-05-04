@@ -43,8 +43,6 @@
         <p>{{ $t("comeback") }}</p>
       </div>
     </div>
-
-    <BuyMeACoffee center v-if="win || (!win && !intents)" />
   </section>
 </template>
 <script>
@@ -54,7 +52,6 @@ import TwitterIcon from "./icons/TwitterIcon.vue";
 import WhatsappIcon from "./icons/WhatsappIcon.vue";
 import TelegramIcon from "./icons/TelegramIcon.vue";
 import CopyIcon from "./icons/CopyIcon.vue";
-import BuyMeACoffee from "./BuyMeACoffee.vue";
 
 export default {
   props: {
@@ -72,7 +69,6 @@ export default {
     WhatsappIcon,
     TelegramIcon,
     CopyIcon,
-    BuyMeACoffee,
   },
   watch: {
     pokemon: function (val) {
