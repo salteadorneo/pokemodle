@@ -50,14 +50,19 @@
 import GitHub from "./GitHub";
 
 import packageInfo from "../../package.json";
+import { getKey } from "@/services/storage";
 const { version } = packageInfo;
 
 export default {
   data() {
     return {
       version,
-      helped: !localStorage.pokedex,
+      helped: false,
     };
+  },
+  async created() {
+    const pokedex = await getKey("pokedex")
+    this.helped = !pokedex;
   },
   components: {
     GitHub,
