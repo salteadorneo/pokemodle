@@ -88,8 +88,6 @@
 <script>
 import splitbee from "@splitbee/web";
 
-import moment from "moment";
-
 import HelpModal from "./components/HelpModal.vue";
 import Languages from "./components/Languages.vue";
 import PokedexModal from "./components/PokedexModal.vue";
@@ -119,18 +117,15 @@ export default {
     ResultModal,
     FixKeyboard,
   },
-  mounted() {
+  async mounted() {
     if (!localStorage.pokedex) {
-      fetch("https://pokeapi.co/api/v2/pokemon?limit=151&offset=0")
-        .then((response) => response.json())
-        .then((data) => {
-          this.pokedex = data.results;
+      const { results } = await fetch("https://pokeapi.co/api/v2/pokemon?limit=151&offset=0").then((response) => response.json())
+      this.pokedex = results;
 
-          localStorage.pokedex = JSON.stringify(data.results);
+      localStorage.pokedex = JSON.stringify(results);
+    }
 
-          this.randomPokemon();
-        });
-    } else this.randomPokemon();
+    this.randomPokemon();
 
     document.body.addEventListener("keyup", this.keyup);
   },
@@ -161,23 +156,23 @@ export default {
     randomPokemon() {
       this.win = false;
       this.intents = localStorage.intents ? parseInt(localStorage.intents) : 5;
-      this.today = moment();
 
-      if (localStorage.pokemon) this.pokemon = JSON.parse(localStorage.pokemon);
-      if (
-        this.pokemon &&
-        this.pokemon.date &&
-        moment(this.pokemon.date).isSame(this.today, "day")
-      )
+      if (localStorage.pokemon) {
+        this.pokemon = JSON.parse(localStorage.pokemon);
+      }
+
+      if (this.pokemon && this.pokemon.date && new Date(this.pokemon.date).toLocaleDateString() === new Date().toLocaleDateString()) {
         this.win = this.pokemon.active;
-      else localStorage.removeItem("pokemon");
+      } else {
+        localStorage.removeItem("pokemon");
+      }
 
       if (!localStorage.pokemon) {
         let noActives = this.pokedex.filter((i) => !i.active);
 
         this.pokemon = noActives[Math.floor(Math.random() * noActives.length)];
         this.pokemon.id = this.pokemon.url.split("/")[6];
-        this.pokemon.date = moment();
+        this.pokemon.date = new Date();
 
         this.intents = 5;
         localStorage.intents = this.intents;
@@ -185,7 +180,9 @@ export default {
         localStorage.pokemon = JSON.stringify(this.pokemon);
       }
 
-      if (location.href.includes("localhost")) console.log(this.pokemon.name);
+      if (location.href.includes("localhost")) {
+        console.log(this.pokemon.name);
+      }
 
       splitbee.track("Pokedex", {
         pokedex: this.pokedex.filter((p) => p.active).length,
