@@ -70,55 +70,56 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-.small {
-  font-size: 10px;
-  line-height: 12px;
-}
+<style scoped>
+  .small {
+    font-size: 10px;
+    line-height: 12px;
+  }
 
-.line {
-  display: block;
-  width: 90%;
-  border: 1px solid #ececec;
-  margin: 20px auto;
-}
+  .line {
+    display: block;
+    width: 90%;
+    border: 1px solid #ececec;
+    margin: 20px auto;
+  }
 
-.help {
-  position: fixed;
-  top: 5px;
-  left: 5px;
-  background: #666;
-  border-radius: 50%;
-  width: 26px;
-  font-size: 16px;
-  line-height: 23px;
-  color: white;
-  border: none;
-  appearance: none;
-  text-align: center;
-  padding: 3px 0 0;
+  .help {
+    position: fixed;
+    top: 5px;
+    left: 5px;
+    background: #666;
+    border-radius: 50%;
+    width: 26px;
+    font-size: 16px;
+    line-height: 23px;
+    color: white;
+    border: none;
+    appearance: none;
+    text-align: center;
+    padding: 3px 0 0;
+  }
 
-  &:hover {
+  .help:hover {
     background: #555;
   }
-}
 
-.popup {
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  z-index: 10;
-  background: #00000050;
-  opacity: 0;
-  transition: all 1s;
+  .popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 10;
+    background: #00000050;
+    opacity: 0;
+    transition: all 1s;
+  }
 
-  &.active {
+  .popup.active {
     opacity: 1;
   }
 
-  & > div {
+  .popup > div {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -130,24 +131,23 @@ export default {
     width: 85%;
     max-width: 300px;
     text-align: center;
-
-    .close {
-      position: fixed;
-      top: 0;
-      right: 0;
-      z-index: 2;
-      color: #000;
-      text-decoration: none;
-      font-size: 28px;
-      font-weight: 600;
-      padding: 5px 15px;
-      background: none;
-    }
-
-    .title {
-      text-align: center;
-      margin: 0 auto;
-    }
   }
-}
+
+  .popup > div .close {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 2;
+    color: #000;
+    text-decoration: none;
+    font-size: 28px;
+    font-weight: 600;
+    padding: 5px 15px;
+    background: none;
+  }
+
+  .popup > div .title {
+    text-align: center;
+    margin: 0 auto;
+  }
 </style>

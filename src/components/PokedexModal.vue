@@ -36,25 +36,24 @@
   </div>
 </template>
 
-<style lang="scss" scoped>
-.tab {
-  position: fixed;
-  top: 40%;
-  right: -20px;
-  transform: translateY(-50%) rotate(-90deg);
-  z-index: 2;
-  color: white;
-  font-size: 15px;
-  padding: 0 15px 0 0;
-  transition: all 0.5s;
-
-  &:hover {
-    &:before {
-      border-bottom-color: #d51a21;
-    }
+<style scoped>
+  .tab {
+    position: fixed;
+    top: 40%;
+    right: -20px;
+    transform: translateY(-50%) rotate(-90deg);
+    z-index: 2;
+    color: white;
+    font-size: 15px;
+    padding: 0 15px 0 0;
+    transition: all 0.5s;
   }
 
-  &.active {
+  .tab:hover:before {
+    border-bottom-color: #d51a21;
+  }
+
+  .tab.active {
     transform: translate3d(-500px, -50%, 0) rotate(-90deg);
 
     @media (max-width: 500px) {
@@ -62,7 +61,7 @@
     }
   }
 
-  &:before {
+  .tab:before {
     content: "";
     position: absolute;
     top: 50%;
@@ -77,56 +76,58 @@
     border-left: 0 solid transparent;
     padding-right: 30px;
   }
-}
 
-.close {
-  position: fixed;
-  top: 0;
-  right: 0;
-  z-index: 2;
-  color: white;
-  text-decoration: none;
-  font-size: 28px;
-  font-weight: 600;
-  padding: 5px 15px;
-  background: none;
-}
+  .close {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 2;
+    color: white;
+    text-decoration: none;
+    font-size: 28px;
+    font-weight: 600;
+    padding: 5px 15px;
+    background: none;
+  }
 
-.counter {
-  font-size: 30px;
-  color: white;
-  font-weight: bold;
-  opacity: 0.3;
-  text-align: right;
-  padding: 0 25px;
-  margin-top: -80px;
-  margin-bottom: 30px;
-}
+  .counter {
+    font-size: 30px;
+    color: white;
+    font-weight: bold;
+    opacity: 0.3;
+    text-align: right;
+    padding: 0 25px;
+    margin-top: -80px;
+    margin-bottom: 30px;
+  }
 
-.pokedex {
-  position: fixed;
-  top: 0;
-  left: 0;
-  transform: translateX(100vw);
-  z-index: 2;
-  width: 100%;
-  max-width: 500px;
-  background: url(../assets/pokedex.png) no-repeat left top #ed1e24;
-  padding-top: 140px;
-  transition: all 0.5s;
+  .pokedex {
+    position: fixed;
+    top: 0;
+    left: 0;
+    transform: translateX(100vw);
+    z-index: 2;
+    width: 100%;
+    max-width: 500px;
+    background: url(../assets/pokedex.png) no-repeat left top #ed1e24;
+    padding-top: 140px;
+    transition: all 0.5s;
+  }
 
-  &.active {
+  .pokedex.active {
     position: absolute;
     transform: translate3d(calc(100vw - 500px), 0, 0);
+  }
 
-    @media (max-width: 500px) {
-      transform: translateX(0);
+  @media (max-width: 500px) {
+    .pokedex.active  {
+    transform: translateX(0);
     }
+  }
 
-    .pokemon {
-      transform: translateY(0) !important;
-      opacity: 1;
-    }
+  .pokedex .pokemon {
+    transform: translateY(0) !important;
+    opacity: 1;
   }
 
   .list {
@@ -145,36 +146,29 @@
     transition: all 1s;
     opacity: 0;
     min-height: 145px;
+  }
 
-    @for $i from 1 through 151 {
-      &:nth-of-type(#{$i}) {
-        transform: translateY($i * 100px);
-      }
-    }
+  .pokemon.active img {
+    filter: none;
+    opacity: 1;
+  }
 
-    @media (max-width: 480px) {
+  .pokemon img {
+    max-width: 70%;
+    filter: brightness(0) invert(1);
+    opacity: 0.05;
+    transition: all 1s;
+  }
+
+  .pokemon .name {
+    text-transform: capitalize;
+  }
+
+  @media (max-width: 480px) {
+    .pokemon {
       flex-basis: 33%;
     }
-
-    &.active {
-      img {
-        filter: none;
-        opacity: 1;
-      }
-    }
-
-    img {
-      max-width: 70%;
-      filter: brightness(0) invert(1);
-      opacity: 0.05;
-      transition: all 1s;
-    }
-
-    .name {
-      text-transform: capitalize;
-    }
   }
-}
 </style>
 
 <script>

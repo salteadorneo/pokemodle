@@ -253,7 +253,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style>
 @font-face {
   font-family: "Lato";
   src: url("./fonts/Lato-Bold.woff2") format("woff2"),
@@ -292,10 +292,10 @@ body {
   margin: 0;
   background: #f5f5f5;
   overflow-x: hidden;
+}
 
-  &::-webkit-scrollbar {
-    width: 0;
-  }
+::-webkit-scrollbar {
+  width: 0;
 }
 
 a {
@@ -313,10 +313,10 @@ a {
   max-width: 80%;
   max-height: 120px;
   margin: 0 auto;
+}
 
-  &:hover {
-    transform: scale(1.05);
-  }
+.logo:hover {
+  transform: scale(1.05);
 }
 
 .scene {
@@ -324,27 +324,29 @@ a {
   height: 100%;
   margin: 0 auto;
   text-align: center;
+}
 
-  .pokemon {
-    position: relative;
-    max-width: 65%;
-    max-height: 40vh;
-    filter: brightness(0);
-    transition: all 1s;
-    pointer-events: none;
-    aspect-ratio: 1;
+.scene .pokemon {
+  position: relative;
+  max-width: 65%;
+  max-height: 40vh;
+  filter: brightness(0);
+  transition: all 1s;
+  pointer-events: none;
+  aspect-ratio: 1;
+}
 
-    &.active {
-      filter: none;
-    }
+.scene .pokemon.active {
+  filter: none;
+}
 
-    &.disappear {
-      opacity: 0;
-    }
+.scene .pokemon.disappear {
+  opacity: 0;
+}
 
-    @media (max-height: 667px) {
-      max-height: 30vh;
-    }
+@media (max-height: 667px) {
+  .scene .pokemon {
+    max-height: 30vh;
   }
 }
 
@@ -367,32 +369,46 @@ a {
   text-align: center;
   color: #888;
   margin: 15px auto 0;
+}
 
-  & > .intents {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.pokeballs > .intents {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-    .pokeball {
-      width: 40px;
-      position: relative;
-      transition: all 1s;
-      opacity: 0;
-      animation: top 2s ease-out forwards;
+.pokeball {
+  width: 40px;
+  position: relative;
+  transition: all 1s;
+  opacity: 0;
+  animation: top 2s ease-out forwards;
+}
 
-      @for $i from 1 through 5 {
-        &:nth-of-type(#{$i}) {
-          transform: translateY($i * 10px);
-        }
-      }
+.pokeball:nth-of-type(1) {
+  transform: translateY(10px);
+}
 
-      &.disabled {
-        transform: none;
-        animation: none;
-        opacity: 0.3 !important;
-      }
-    }
-  }
+.pokeball:nth-of-type(2) {
+  transform: translateY(20px);
+}
+
+.pokeball:nth-of-type(3) {
+  transform: translateY(30px);
+}
+
+.pokeball:nth-of-type(4) {
+  transform: translateY(40px);
+}
+
+.pokeball:nth-of-type(5) {
+  transform: translateY(50px);
+}
+
+.pokeball.disabled {
+  transform: none;
+  animation: none;
+  opacity: 0.3 !important;
 }
 
 @keyframes top {
@@ -411,24 +427,24 @@ a {
   margin: 0 auto;
   z-index: 10;
   overflow: hidden;
+}
 
-  ul {
-    display: block;
-    list-style: none;
-    padding: 2px 0;
-    margin: 0;
-    max-height: calc(30px * 4);
+.autocomplete ul {
+  display: block;
+  list-style: none;
+  padding: 2px 0;
+  margin: 0;
+  max-height: calc(30px * 4);
+}
 
-    li {
-      font-size: 14px;
-      color: black;
-      padding: 6px 12px;
-      border: none;
-      appearance: none;
-      width: 100%;
-      border-radius: none;
-    }
-  }
+.autocomplete ul li {
+  font-size: 14px;
+  color: black;
+  padding: 6px 12px;
+  border: none;
+  appearance: none;
+  width: 100%;
+  border-radius: none;
 }
 
 button {

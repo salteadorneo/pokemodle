@@ -113,37 +113,38 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped>
-.msg {
-  text-align: center;
-}
 
-.share {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 10px auto 20px;
+<style scoped>
+  .msg {
+    text-align: center;
+  }
 
-  a,
-  .btn {
+  .share {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px auto 20px;
+  }
+
+  .share a,
+  .share .btn {
     width: 35px;
     height: 35px;
     margin: 0 3px;
-
-    &:hover {
-      transform: scale(1.1);
-    }
   }
-}
 
-.rounded {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  padding: 0;
-  text-align: center;
-  color: white;
-  background: #ed1e24;
-}
+  .share .btn:hover {
+    transform: scale(1.1);
+  }
+
+  .rounded {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    padding: 0;
+    text-align: center;
+    color: white;
+    background: #ed1e24;
+  }
 </style>

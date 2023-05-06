@@ -57,7 +57,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .keyboard {
   position: fixed;
   left: 50%;
@@ -68,26 +68,26 @@ export default {
   max-height: 40vh;
   text-align: center;
   padding: 0 4px 4px;
+}
 
-  .keyrow {
-    display: flex;
-    justify-content: center;
-    width: 100%;
+.keyboard .keyrow {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
 
-    .key {
-      flex: 1 1 0px;
-      color: white;
-      background: #333;
-      border-radius: 6px;
-      height: 56px;
-      outline: none;
-      border: 0;
-      margin: 2px;
+.keyboard .keyrow .key {
+  flex: 1 1 0px;
+  color: white;
+  background: #333;
+  border-radius: 6px;
+  height: 56px;
+  outline: none;
+  border: 0;
+  margin: 2px;
+}
 
-      &:hover {
-        background: #555;
-      }
-    }
-  }
+.keyboard .keyrow .key:hover {
+  background: #555;
 }
 </style>
