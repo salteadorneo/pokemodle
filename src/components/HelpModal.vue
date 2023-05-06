@@ -49,6 +49,8 @@
 <script>
 import GitHub from "./GitHub";
 
+import { getKey } from "../services/storage";
+
 import packageInfo from "../../package.json";
 const { version } = packageInfo;
 
@@ -56,7 +58,7 @@ export default {
   data() {
     return {
       version,
-      helped: !localStorage.pokedex,
+      helped: !getKey("pokedex"),
     };
   },
   components: {

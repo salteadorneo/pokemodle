@@ -99,15 +99,17 @@ import ResultModal from "./components/ResultModal.vue";
 import FixKeyboard from "./components/FixKeyboard.vue";
 import BuyMeACoffee from "./components/BuyMeACoffee.vue";
 
+import { getKey, setKey, removeKey } from "./services/storage";
+
 import confetti from "canvas-confetti";
 
 export default {
   name: "App",
   data() {
     return {
-      pokedex: localStorage.pokedex ? JSON.parse(localStorage.pokedex) : [],
+      pokedex: [],
       pokemon: {},
-      intents: localStorage.intents ? parseInt(localStorage.intents) : 5,
+      intents: 5,
       win: false,
       input: "",
       errorShake: false,
@@ -123,18 +125,19 @@ export default {
     FixKeyboard,
     BuyMeACoffee,
   },
-  mounted() {
-    if (!localStorage.pokedex) {
-      fetch("https://pokeapi.co/api/v2/pokemon?limit=151&offset=0")
-        .then((response) => response.json())
-        .then((data) => {
-          this.pokedex = data.results;
+  async mounted() {
+    this.pokedex = getKey("pokedex") ?? [];
+    this.intents = getKey("intents") ?? 5;
 
-          localStorage.pokedex = JSON.stringify(data.results);
+    if (this.pokedex.length === 0) {
+      const { results: pokedex } = await fetch("https://pokeapi.co/api/v2/pokemon?limit=151&offset=0").then((res) => res.json())
 
-          this.randomPokemon();
-        });
-    } else this.randomPokemon();
+      this.pokedex = pokedex;
+
+      setKey("pokedex", pokedex);
+    }
+    
+    this.randomPokemon();
 
     document.body.addEventListener("keyup", this.keyup);
   },
@@ -164,19 +167,20 @@ export default {
     },
     randomPokemon() {
       this.win = false;
-      this.intents = localStorage.intents ? parseInt(localStorage.intents) : 5;
+      this.intents = getKey("intents") ?? 5;
       this.today = moment();
 
-      if (localStorage.pokemon) this.pokemon = JSON.parse(localStorage.pokemon);
-      if (
-        this.pokemon &&
-        this.pokemon.date &&
-        moment(this.pokemon.date).isSame(this.today, "day")
-      )
-        this.win = this.pokemon.active;
-      else localStorage.removeItem("pokemon");
+      this.pokemon = getKey("pokemon") ?? {};
 
-      if (!localStorage.pokemon) {
+      if (this.pokemon.id && this.pokemon.date &&
+        moment(this.pokemon.date).isSame(this.today, "day")
+      ) {
+        this.win = this.pokemon.active;
+      } else {
+        removeKey("pokemon");
+      }
+
+      if (!this.pokemon.id) {
         let noActives = this.pokedex.filter((i) => !i.active);
 
         this.pokemon = noActives[Math.floor(Math.random() * noActives.length)];
@@ -184,9 +188,8 @@ export default {
         this.pokemon.date = moment();
 
         this.intents = 5;
-        localStorage.intents = this.intents;
-
-        localStorage.pokemon = JSON.stringify(this.pokemon);
+        setKey("intents", this.intents)
+        setKey("pokemon", this.pokemon);
       }
 
       if (location.href.includes("localhost")) console.log(this.pokemon.name);
@@ -223,8 +226,8 @@ export default {
         let pokemon = this.pokedex.find((i) => i.name == this.pokemon.name);
         if (pokemon) pokemon.active = true;
 
-        localStorage.pokemon = JSON.stringify(this.pokemon);
-        localStorage.pokedex = JSON.stringify(this.pokedex);
+        setKey("pokemon", this.pokemon);
+        setKey("pokedex", this.pokedex);
 
         this.randomPokemon();
 
@@ -246,7 +249,7 @@ export default {
           });
         }
       }
-      localStorage.intents = this.intents;
+      setKey("intents", this.intents);
       this.input = "";
     },
   },
