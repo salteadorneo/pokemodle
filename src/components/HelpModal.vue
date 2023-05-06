@@ -47,29 +47,29 @@
 </template>
 
 <script>
-import GitHub from "./GitHub";
+import GitHub from './GitHub'
 
-import { getKey } from "../services/storage";
+import { getKey } from '../services/storage'
 
-import packageInfo from "../../package.json";
-const { version } = packageInfo;
+import packageInfo from '../../package.json'
+const { version } = packageInfo
 
 export default {
-  data() {
+  data () {
     return {
       version,
-      helped: !getKey("pokedex"),
-    };
+      helped: !getKey('pokedex')
+    }
   },
   components: {
-    GitHub,
+    GitHub
   },
   methods: {
-    closePopup() {
-      this.helped = false;
-    },
-  },
-};
+    closePopup () {
+      this.helped = false
+    }
+  }
+}
 </script>
 
 <style scoped>

@@ -48,70 +48,70 @@
   </section>
 </template>
 <script>
-import splitbee from "@splitbee/web";
+import splitbee from '@splitbee/web'
 
-import TwitterIcon from "./icons/TwitterIcon.vue";
-import WhatsappIcon from "./icons/WhatsappIcon.vue";
-import TelegramIcon from "./icons/TelegramIcon.vue";
-import CopyIcon from "./icons/CopyIcon.vue";
-import BuyMeACoffee from "./BuyMeACoffee.vue";
+import TwitterIcon from './icons/TwitterIcon.vue'
+import WhatsappIcon from './icons/WhatsappIcon.vue'
+import TelegramIcon from './icons/TelegramIcon.vue'
+import CopyIcon from './icons/CopyIcon.vue'
+import BuyMeACoffee from './BuyMeACoffee.vue'
 
 export default {
   props: {
     pokemon: Object,
     win: Boolean,
-    intents: Number,
+    intents: Number
   },
-  data() {
+  data () {
     return {
-      shareText: "",
-    };
+      shareText: ''
+    }
   },
   components: {
     TwitterIcon,
     WhatsappIcon,
     TelegramIcon,
     CopyIcon,
-    BuyMeACoffee,
+    BuyMeACoffee
   },
   watch: {
     pokemon: function (val) {
       this.shareText = `Pokemodle #${this.getPokenumber(
         val.id
-      )} ¡Hoy he atrapado un ${this.capitalize(val.name)}!`;
-    },
+      )} ¡Hoy he atrapado un ${this.capitalize(val.name)}!`
+    }
   },
   methods: {
-    getPokenumber(v) {
-      if (!v) return "000";
-      return ("000" + v).slice(-3);
+    getPokenumber (v) {
+      if (!v) return '000'
+      return ('000' + v).slice(-3)
     },
-    capitalize(val) {
-      if (!val) return "";
-      return val.charAt(0).toUpperCase() + val.slice(1);
+    capitalize (val) {
+      if (!val) return ''
+      return val.charAt(0).toUpperCase() + val.slice(1)
     },
-    setEvent(e) {
-      splitbee.track("Share", {
-        mode: e,
-      });
+    setEvent (e) {
+      splitbee.track('Share', {
+        mode: e
+      })
     },
-    clipboard() {
+    clipboard () {
       if (navigator.canShare) {
         navigator.share({
-          title: "Pokemodle",
+          title: 'Pokemodle',
           text: this.shareText,
-          url: "https://pokemodle.salteadorneo.dev/",
-        });
-        this.setEvent("native");
+          url: 'https://pokemodle.salteadorneo.dev/'
+        })
+        this.setEvent('native')
       } else {
         navigator.clipboard.writeText(
-          this.shareText + " https://pokemodle.salteadorneo.dev/"
-        );
-        this.setEvent("clipboard");
+          this.shareText + ' https://pokemodle.salteadorneo.dev/'
+        )
+        this.setEvent('clipboard')
       }
-    },
-  },
-};
+    }
+  }
+}
 </script>
 
 <style scoped>

@@ -172,37 +172,37 @@
 </style>
 
 <script>
-import splitbee from "@splitbee/web";
+import splitbee from '@splitbee/web'
 
 export default {
   props: {
     pokedex: Array,
     win: Boolean,
-    pokemon: Object,
+    pokemon: Object
   },
-  data() {
+  data () {
     return {
-      hidePokedex: true,
-    };
+      hidePokedex: true
+    }
   },
   methods: {
-    getPokenumber(v) {
-      return ("000" + v).slice(-3);
-    },
+    getPokenumber (v) {
+      return ('000' + v).slice(-3)
+    }
   },
   watch: {
-    hidePokedex() {
-      splitbee.track("ShowPokedex");
+    hidePokedex () {
+      splitbee.track('ShowPokedex')
 
       if (this.win) {
         setTimeout(() => {
           const element = document.querySelector(
-            "#pokemon" + this.getPokenumber(this.pokemon.id)
-          );
-          element.scrollIntoView({ behavior: "smooth", block: "center" });
-        }, 1000);
+            '#pokemon' + this.getPokenumber(this.pokemon.id)
+          )
+          element.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        }, 1000)
       }
-    },
-  },
-};
+    }
+  }
+}
 </script>
