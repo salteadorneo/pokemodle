@@ -168,10 +168,15 @@ export default {
       this.intents = getKey("intents") ?? 5;
       this.pokemon = getKey("pokemon") ?? {};
 
-      if (this.pokemon.id && this.pokemon.date && new Date(this.pokemon.date).toLocaleDateString() === new Date().toLocaleDateString()) {
+      const todayDate = new Date();
+      // todayDate.setDate(todayDate.getDate() - 7);
+      const todayDateString = todayDate.toLocaleDateString();
+
+      if (this.pokemon.id && this.pokemon.date && new Date(this.pokemon.date).toLocaleDateString() === todayDateString) {
         this.win = this.pokemon.active;
       } else {
         removeKey("pokemon");
+        this.pokemon = {};
       }
 
       if (!this.pokemon.id) {
@@ -179,7 +184,7 @@ export default {
 
         this.pokemon = noActives[Math.floor(Math.random() * noActives.length)];
         this.pokemon.id = this.pokemon.url.split("/")[6];
-        this.pokemon.date = new Date();
+        this.pokemon.date = todayDate;
 
         this.intents = 5;
         setKey("intents", this.intents)
