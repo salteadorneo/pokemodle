@@ -45,49 +45,49 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
     }
   },
   methods: {
-    setKey(v) {
-      this.$emit('setKey', v);
-    },
+    setKey (v) {
+      this.$emit('setKey', v)
+    }
   }
 }
 </script>
 
-<style lang="scss" scoped>
-.keyboard {
-  position: fixed;
-  left: 50%;
-  bottom: 0;
-  transform: translateX(-50%);
-  width: 100%;
-  max-width: 492px;
-  max-height: 40vh;
-  text-align: center;
-  padding: 0 4px 4px;
+<style scoped>
+  .keyboard {
+    position: fixed;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 492px;
+    max-height: 40vh;
+    text-align: center;
+    padding: 0 4px 4px;
+  }
 
-  .keyrow {
+  .keyboard .keyrow {
     display: flex;
     justify-content: center;
     width: 100%;
-
-    .key {
-      flex: 1 1 0px;
-      color: white;
-      background: #333;
-      border-radius: 6px;
-      height: 56px;
-      outline: none;
-      border: 0;
-      margin: 2px;
-
-      &:hover {
-        background: #555;
-      }
-    }
   }
-}
+
+  .keyboard .keyrow .key {
+    flex: 1 1 0px;
+    color: white;
+    background: #333;
+    border-radius: 6px;
+    height: 56px;
+    outline: none;
+    border: 0;
+    margin: 2px;
+  }
+
+  .keyboard .keyrow .key:hover {
+    background: #555;
+  }
 </style>

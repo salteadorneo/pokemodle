@@ -17,26 +17,22 @@
 </template>
 
 <style scoped>
-a {
-  text-decoration: none;
-  font-size: 12px;
-  color: #7c7c7c;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.github {
-  /* position: fixed;
-  bottom: 15px;
-  left: 50%;
-  transform: translateX(-50%); */
-  width: 25px;
-  height: 25px;
-  opacity: .7;
-  margin-right: 5px;
-}
+  a {
+    text-decoration: none;
+    font-size: 12px;
+    color: #7c7c7c;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .github {
+    width: 25px;
+    height: 25px;
+    opacity: .7;
+    margin-right: 5px;
+  }
 
-.github:hover {
-    opacity: 1;
-}
+  .github:hover {
+      opacity: 1;
+  }
 </style>
