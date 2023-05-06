@@ -51,8 +51,6 @@ const i18n = new VueI18n({
 
 Vue.config.productionTip = false;
 
-Vue.use(require("vue-moment"));
-
 new Vue({
   i18n,
   render: (h) => h(App),

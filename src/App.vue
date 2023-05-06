@@ -90,8 +90,6 @@
 <script>
 import splitbee from "@splitbee/web";
 
-import moment from "moment";
-
 import HelpModal from "./components/HelpModal.vue";
 import Languages from "./components/Languages.vue";
 import PokedexModal from "./components/PokedexModal.vue";
@@ -168,13 +166,9 @@ export default {
     randomPokemon() {
       this.win = false;
       this.intents = getKey("intents") ?? 5;
-      this.today = moment();
-
       this.pokemon = getKey("pokemon") ?? {};
 
-      if (this.pokemon.id && this.pokemon.date &&
-        moment(this.pokemon.date).isSame(this.today, "day")
-      ) {
+      if (this.pokemon.id && this.pokemon.date && new Date(this.pokemon.date).toLocaleDateString() === new Date().toLocaleDateString()) {
         this.win = this.pokemon.active;
       } else {
         removeKey("pokemon");
@@ -185,7 +179,7 @@ export default {
 
         this.pokemon = noActives[Math.floor(Math.random() * noActives.length)];
         this.pokemon.id = this.pokemon.url.split("/")[6];
-        this.pokemon.date = moment();
+        this.pokemon.date = new Date();
 
         this.intents = 5;
         setKey("intents", this.intents)
