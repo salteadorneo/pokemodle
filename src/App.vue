@@ -1,5 +1,7 @@
 <template>
   <div id="app">
+    <div class="grad"></div>
+
     <HelpModal />
 
     <Languages v-if="false" />
@@ -8,50 +10,30 @@
     <img src="./assets/logo.png" alt="Pokemodle" class="logo" />
 
     <div class="scene" v-if="pokemon.id">
-      <img
-        :src="
-          'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/' +
-          pokemon.id +
-          '.png'
-        "
-        alt=""
-        :class="{
-          pokemon: true,
-          active: win,
-          disappear: !intents && !pokemon.active,
-        }"
-        fetchPriority="high"
-        draggable="false"
-      />
+      <img :src="'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/' +
+        pokemon.id +
+        '.png'
+        " alt="" :class="{
+    pokemon: true,
+    active: win,
+    disappear: !intents && !pokemon.active,
+  }" fetchPriority="high" draggable="false" />
     </div>
 
     <div v-if="intents && !pokemon.active">
       <div>
-        <input
-          v-model="input"
-          :placeholder="$t('question')"
-          class="textInput"
-          :class="{ 'error-shake': errorShake }"
-          readonly
-        />
-        <div
-          v-if="
-            input &&
-            input.length >= 2 &&
-            pokedex.filter(
-              (p) => p.name.toLowerCase().indexOf(input.toLowerCase()) == 0
-            ).length > 0
-          "
-          class="autocomplete"
-        >
+        <input v-model="input" :placeholder="$t('question')" class="textInput" :class="{ 'error-shake': errorShake }"
+          readonly />
+        <div v-if="input &&
+          input.length >= 2 &&
+          pokedex.filter(
+            (p) => p.name.toLowerCase().indexOf(input.toLowerCase()) == 0
+          ).length > 0
+          " class="autocomplete">
           <ul>
-            <li
-              v-for="(pokemon, index) in pokedex.filter(
-                (p) => p.name.toLowerCase().indexOf(input.toLowerCase()) == 0
-              )"
-              v-bind:key="index"
-              @click.prevent="setAndValidate(pokemon)"
-            >
+            <li v-for="(pokemon, index) in pokedex.filter(
+              (p) => p.name.toLowerCase().indexOf(input.toLowerCase()) == 0
+            )" v-bind:key="index" @click.prevent="setAndValidate(pokemon)">
               {{ pokemon.name }}
             </li>
           </ul>
@@ -61,20 +43,9 @@
       <section class="pokeballs">
         <p>{{ $t("attempts") }}</p>
         <div class="intents">
-          <img
-            v-for="item in intents"
-            v-bind:key="item + 1000"
-            src="./assets/pokeball.png"
-            alt=""
-            class="pokeball"
-          />
-          <img
-            v-for="item in 5 - intents"
-            v-bind:key="item + 2000"
-            src="./assets/pokeball.png"
-            alt=""
-            class="pokeball disabled"
-          />
+          <img v-for="item in intents" v-bind:key="item + 1000" src="./assets/pokeball.png" alt="" class="pokeball" />
+          <img v-for="item in 5 - intents" v-bind:key="item + 2000" src="./assets/pokeball.png" alt=""
+            class="pokeball disabled" />
         </div>
       </section>
     </div>
@@ -103,7 +74,7 @@ import confetti from 'canvas-confetti'
 
 export default {
   name: 'App',
-  data () {
+  data() {
     return {
       pokedex: [],
       pokemon: {},
@@ -123,7 +94,7 @@ export default {
     FixKeyboard,
     BuyMeACoffee
   },
-  async mounted () {
+  async mounted() {
     this.pokedex = getKey('pokedex') ?? []
     this.intents = getKey('intents') ?? 5
 
@@ -140,11 +111,11 @@ export default {
     document.body.addEventListener('keyup', this.keyup)
   },
   methods: {
-    setAndValidate (v) {
+    setAndValidate(v) {
       this.input = v.name
       this.checkPokemon()
     },
-    setKey (v) {
+    setKey(v) {
       if (v === 'enter') {
         this.checkPokemon()
       } else if (v === 'return') {
@@ -153,7 +124,7 @@ export default {
         this.input += v
       }
     },
-    keyup (e) {
+    keyup(e) {
       if (!e.key) return
       if (e.key === 'Enter') {
         this.checkPokemon()
@@ -163,7 +134,7 @@ export default {
         this.input += e.key
       }
     },
-    randomPokemon () {
+    randomPokemon() {
       this.win = false
       this.intents = getKey('intents') ?? 5
       this.pokemon = getKey('pokemon') ?? {}
@@ -199,7 +170,7 @@ export default {
         pokedex: this.pokedex.filter((p) => p.active).length
       })
     },
-    checkPokemon () {
+    checkPokemon() {
       if (!this.intents || !this.input) return
       if (!this.pokedex.some((i) => i.name === this.input)) {
         const self = this
@@ -258,225 +229,257 @@ export default {
 </script>
 
 <style>
-  @font-face {
-    font-family: "Lato";
-    src: url("./fonts/Lato-Bold.woff2") format("woff2"),
-      url("./fonts/Lato-Bold.woff") format("woff");
-    font-weight: bold;
-    font-style: normal;
-    font-display: swap;
-  }
+@font-face {
+  font-family: "Lato";
+  src: url("./fonts/Lato-Bold.woff2") format("woff2"),
+    url("./fonts/Lato-Bold.woff") format("woff");
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
 
-  @font-face {
-    font-family: "Lato";
-    src: url("./fonts/Lato-Light.woff2") format("woff2"),
-      url("./fonts/Lato-Light.woff") format("woff");
-    font-weight: 300;
-    font-style: normal;
-    font-display: swap;
-  }
+@font-face {
+  font-family: "Lato";
+  src: url("./fonts/Lato-Light.woff2") format("woff2"),
+    url("./fonts/Lato-Light.woff") format("woff");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
 
-  @font-face {
-    font-family: "Lato";
-    src: url("./fonts/Lato-Regular.woff2") format("woff2"),
-      url("./fonts/Lato-Regular.woff") format("woff");
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-  }
+@font-face {
+  font-family: "Lato";
+  src: url("./fonts/Lato-Regular.woff2") format("woff2"),
+    url("./fonts/Lato-Regular.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
 
-  * {
-    box-sizing: border-box;
-    user-select: none;
-  }
+:root {
+  --primary: #ED1E24;
+  --secondary: #aa181d;
+}
 
-  body {
-    font-family: "Lato", sans-serif;
-    padding: 20px 0 0;
-    margin: 0;
-    background: #f5f5f5;
-    overflow-x: hidden;
-  }
+* {
+  box-sizing: border-box;
+  user-select: none;
+}
 
-  ::-webkit-scrollbar {
-    width: 0;
-  }
+body {
+  font-family: "Lato", sans-serif;
+  padding: 20px 0 0;
+  margin: 0;
+  color: white;
+  overflow-x: hidden;
+}
 
-  a {
-    color: white;
-  }
+::-webkit-scrollbar {
+  width: 0;
+}
 
-  #app {
-    width: 530px;
-    max-width: 100%;
-    margin: 0 auto;
-  }
+a {
+  color: white;
+}
 
-  .logo {
-    display: block;
-    max-width: 80%;
-    max-height: 120px;
-    margin: 0 auto;
-  }
+#app {
+  width: 530px;
+  max-width: 100%;
+  margin: 0 auto;
+}
 
-  .logo:hover {
-    transform: scale(1.05);
-  }
+.logo {
+  display: block;
+  max-width: 80%;
+  max-height: 120px;
+  margin: 0 auto;
+}
 
-  .scene {
-    width: 100%;
-    height: 100%;
-    margin: 0 auto;
-    text-align: center;
-  }
+.logo:hover {
+  transform: scale(1.05);
+}
 
+.grad {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  width: 100dvw;
+  height: 100dvh;
+}
+
+.grad:after,
+.grad:before {
+  content: '';
+  position: absolute;
+  background: linear-gradient(90deg, transparent 50%, var(--primary) 50%, var(--primary)), linear-gradient(82deg, transparent 50%, var(--secondary) 50%, var(--secondary)), linear-gradient(67deg, transparent 50%, var(--primary) 50%, var(--primary)), linear-gradient(52deg, transparent 50%, var(--secondary) 50%, var(--secondary)), linear-gradient(37deg, transparent 50%, var(--primary) 50%, var(--primary)), linear-gradient(22deg, transparent 50%, var(--secondary) 50%, var(--secondary)), linear-gradient(7deg, transparent 50%, var(--primary) 50%, var(--primary)), linear-gradient(-8deg, transparent 50%, var(--secondary) 50%, var(--secondary)), linear-gradient(-23deg, transparent 50%, var(--primary) 50%, var(--primary)), linear-gradient(-38deg, transparent 50%, var(--secondary) 50%, var(--secondary)), linear-gradient(-53deg, transparent 50%, var(--primary) 50%, var(--primary)), linear-gradient(-68deg, transparent 50%, var(--secondary) 50%, var(--secondary)), linear-gradient(-83deg, transparent 50%, var(--primary) 50%, var(--primary)), linear-gradient(-90deg, transparent 50%, var(--secondary) 50%, var(--secondary));
+  background-position: 0% 0%;
+  background-size: 200% 100%;
+  height: 100%;
+  width: 50%;
+}
+
+.grad:before {
+  left: 50%;
+  transform: rotate(180deg);
+}
+
+.scene {
+  width: 100%;
+  height: 100%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.scene .pokemon {
+  position: relative;
+  max-width: 65%;
+  max-height: 40vh;
+  filter: brightness(0);
+  transition: all 1s;
+  pointer-events: none;
+  aspect-ratio: 1;
+}
+
+.scene .pokemon.active {
+  filter: none;
+}
+
+.scene .pokemon.disappear {
+  opacity: 0;
+}
+
+@media (max-height: 667px) {
   .scene .pokemon {
-    position: relative;
-    max-width: 65%;
-    max-height: 40vh;
-    filter: brightness(0);
-    transition: all 1s;
-    pointer-events: none;
-    aspect-ratio: 1;
+    max-height: 30vh;
+  }
+}
+
+.textInput {
+  display: block;
+  width: 250px;
+  margin: 0 auto;
+  padding: 12px;
+  outline: none;
+  appearance: none;
+  background: none;
+  border: 0;
+  font-size: 18px;
+  line-height: 20px;
+  text-align: center;
+}
+
+.pokeballs {
+  text-align: center;
+  margin: 15px auto 0;
+}
+
+.pokeballs>.intents {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pokeball {
+  width: 40px;
+  position: relative;
+  transition: all .5s;
+  opacity: 0;
+  animation: top 2s ease-out forwards;
+}
+
+.pokeball:nth-of-type(1) {
+  transform: translateY(10px);
+}
+
+.pokeball:nth-of-type(2) {
+  transform: translateY(15px);
+}
+
+.pokeball:nth-of-type(3) {
+  transform: translateY(20px);
+}
+
+.pokeball:nth-of-type(4) {
+  transform: translateY(25px);
+}
+
+.pokeball:nth-of-type(5) {
+  transform: translateY(30px);
+}
+
+.pokeball.disabled {
+  opacity: 0.3 !important;
+}
+
+@keyframes top {
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.autocomplete {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.99);
+  width: 250px;
+  margin: 0 auto;
+  z-index: 10;
+  overflow: hidden;
+}
+
+.autocomplete ul {
+  display: block;
+  list-style: none;
+  padding: 2px 0;
+  margin: 0;
+  max-height: calc(30px * 4);
+}
+
+.autocomplete ul li {
+  font-size: 14px;
+  color: black;
+  padding: 6px 12px;
+  border: none;
+  appearance: none;
+  width: 100%;
+  border-radius: none;
+}
+
+button {
+  border: 0;
+  appearance: none;
+}
+
+.error-shake {
+  animation: error_shake 0.4s 1 linear;
+}
+
+@keyframes error_shake {
+  0% {
+    -webkit-transform: translate(30px);
   }
 
-  .scene .pokemon.active {
-    filter: none;
+  20% {
+    -webkit-transform: translate(-30px);
   }
 
-  .scene .pokemon.disappear {
-    opacity: 0;
+  40% {
+    -webkit-transform: translate(15px);
   }
 
-  @media (max-height: 667px) {
-    .scene .pokemon {
-      max-height: 30vh;
-    }
+  60% {
+    -webkit-transform: translate(-15px);
   }
 
-  .textInput {
-    display: block;
-    width: 250px;
-    margin: 0 auto;
-    padding: 12px;
-    outline: none;
-    appearance: none;
-    background: none;
-    border: 0;
-    font-size: 18px;
-    line-height: 20px;
-    text-align: center;
+  80% {
+    -webkit-transform: translate(8px);
   }
 
-  .pokeballs {
-    font-size: 12px;
-    text-align: center;
-    color: #888;
-    margin: 15px auto 0;
+  100% {
+    -webkit-transform: translate(0px);
   }
-
-  .pokeballs > .intents {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .pokeball {
-    width: 40px;
-    position: relative;
-    transition: all 1s;
-    opacity: 0;
-    animation: top 2s ease-out forwards;
-  }
-
-  .pokeball:nth-of-type(1) {
-    transform: translateY(10px);
-  }
-
-  .pokeball:nth-of-type(2) {
-    transform: translateY(20px);
-  }
-
-  .pokeball:nth-of-type(3) {
-    transform: translateY(30px);
-  }
-
-  .pokeball:nth-of-type(4) {
-    transform: translateY(40px);
-  }
-
-  .pokeball:nth-of-type(5) {
-    transform: translateY(50px);
-  }
-
-  .pokeball.disabled {
-    transform: none;
-    animation: none;
-    opacity: 0.3 !important;
-  }
-
-  @keyframes top {
-    100% {
-      transform: translateY(0);
-      opacity: 1;
-    }
-  }
-
-  .autocomplete {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(255, 255, 255, 0.99);
-    width: 250px;
-    margin: 0 auto;
-    z-index: 10;
-    overflow: hidden;
-  }
-
-  .autocomplete ul {
-    display: block;
-    list-style: none;
-    padding: 2px 0;
-    margin: 0;
-    max-height: calc(30px * 4);
-  }
-
-  .autocomplete ul li {
-    font-size: 14px;
-    color: black;
-    padding: 6px 12px;
-    border: none;
-    appearance: none;
-    width: 100%;
-    border-radius: none;
-  }
-
-  button {
-    border: 0;
-    appearance: none;
-  }
-
-  .error-shake {
-    animation: error_shake 0.4s 1 linear;
-  }
-  @keyframes error_shake {
-    0% {
-      -webkit-transform: translate(30px);
-    }
-    20% {
-      -webkit-transform: translate(-30px);
-    }
-    40% {
-      -webkit-transform: translate(15px);
-    }
-    60% {
-      -webkit-transform: translate(-15px);
-    }
-    80% {
-      -webkit-transform: translate(8px);
-    }
-    100% {
-      -webkit-transform: translate(0px);
-    }
-  }
+}
 </style>

@@ -9,17 +9,17 @@
 </template>
 
 <style scoped>
-  .locale-changer {
-    position: absolute;
-    top: 0;
-    right: 0;
-  }
+.locale-changer {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
 </style>
 
 <script>
 export default {
   name: 'locale-changer',
-  data () {
+  data() {
     return { langs: ['es', 'en'] }
   }
 }

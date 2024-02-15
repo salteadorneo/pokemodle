@@ -1,33 +1,20 @@
 <template>
   <section>
-    <button
-      v-on:click="
-        () => {
-          this.helped = true;
-        }
-      "
-      class="help"
-    >
+    <button v-on:click="() => {
+      this.helped = true;
+    }
+      " class="help">
       ?
     </button>
-    <div
-      v-if="helped"
-      class="popup active"
-      v-on:click="
-        () => {
+    <div v-if="helped" class="popup active" v-on:click="() => {
+      this.helped = false;
+    }
+      ">
+      <div>
+        <button v-on:click="() => {
           this.helped = false;
         }
-      "
-    >
-      <div>
-        <button
-          v-on:click="
-            () => {
-              this.helped = false;
-            }
-          "
-          class="close"
-        >
+          " class="close">
           x
         </button>
         <h2 class="title">{{ $t("help.title") }}</h2>
@@ -55,7 +42,7 @@ import packageInfo from '../../package.json'
 const { version } = packageInfo
 
 export default {
-  data () {
+  data() {
     return {
       version,
       helped: !getKey('pokedex')
@@ -65,7 +52,7 @@ export default {
     GitHub
   },
   methods: {
-    closePopup () {
+    closePopup() {
       this.helped = false
     }
   }
@@ -73,83 +60,88 @@ export default {
 </script>
 
 <style scoped>
-  .small {
-    font-size: 10px;
-    line-height: 12px;
-  }
+.small {
+  font-size: 10px;
+  line-height: 12px;
+}
 
-  .line {
-    display: block;
-    width: 90%;
-    border: 1px solid #ececec;
-    margin: 20px auto;
-  }
+.line {
+  display: block;
+  width: 90%;
+  border: 1px solid #ececec;
+  margin: 20px auto;
+}
 
-  .help {
-    position: fixed;
-    top: 5px;
-    left: 5px;
-    background: #666;
-    border-radius: 50%;
-    width: 26px;
-    font-size: 16px;
-    line-height: 23px;
-    color: white;
-    border: none;
-    appearance: none;
-    text-align: center;
-    padding: 3px 0 0;
-  }
+.help {
+  position: fixed;
+  top: 5px;
+  left: 5px;
+  background: white;
+  border-radius: 50%;
+  width: 26px;
+  font-size: 16px;
+  line-height: 23px;
+  color: black;
+  border: none;
+  appearance: none;
+  text-align: center;
+  padding: 3px 0 0;
+  transition: transform 0.5s;
+}
 
-  .help:hover {
-    background: #555;
-  }
+.help:hover {
+  transform: rotate(15deg);
+}
 
-  .popup {
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    z-index: 10;
-    background: #00000050;
-    opacity: 0;
-    transition: all 1s;
-  }
+a {
+  color: black;
+}
 
-  .popup.active {
-    opacity: 1;
-  }
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 10;
+  color: #000;
+  background: #00000050;
+  opacity: 0;
+  transition: all 1s;
+}
 
-  .popup > div {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 1;
-    background: #fff;
-    border-radius: 6px;
-    padding: 20px;
-    width: 85%;
-    max-width: 300px;
-    text-align: center;
-  }
+.popup.active {
+  opacity: 1;
+}
 
-  .popup > div .close {
-    position: fixed;
-    top: 0;
-    right: 0;
-    z-index: 2;
-    color: #000;
-    text-decoration: none;
-    font-size: 28px;
-    font-weight: 600;
-    padding: 5px 15px;
-    background: none;
-  }
+.popup>div {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  background: #fff;
+  border-radius: 6px;
+  padding: 20px;
+  width: 85%;
+  max-width: 300px;
+  text-align: center;
+}
 
-  .popup > div .title {
-    text-align: center;
-    margin: 0 auto;
-  }
+.popup>div .close {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 2;
+  text-decoration: none;
+  font-size: 28px;
+  font-weight: 600;
+  padding: 5px 15px;
+  background: none;
+}
+
+.popup>div .title {
+  text-align: center;
+  margin: 0 auto;
+}
 </style>

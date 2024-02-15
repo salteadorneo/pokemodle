@@ -10,26 +10,25 @@
   },
   "dependencies": {
     "@splitbee/web": "^0.3.0",
-    "canvas-confetti": "^1.6.0",
-    "core-js": "^3.8.3",
-    "vue": "^2.6.14",
-    "vue-i18n": "^8.27.2"
+    "canvas-confetti": "^1.9.2",
+    "core-js": "^3.36.0",
+    "vue": "^2.7.16",
+    "vue-i18n": "^8.28.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.16",
-    "@babel/eslint-parser": "^7.12.16",
-    "@vue/cli-plugin-babel": "~5.0.0",
-    "@vue/cli-plugin-eslint": "~5.0.0",
-    "@vue/cli-plugin-unit-jest": "~5.0.0",
-    "@vue/cli-service": "~5.0.0",
-    "@vue/test-utils": "^1.3.2",
-    "@vue/vue2-jest": "^27.0.0-alpha.2",
-    "babel-jest": "^27.0.6",
+    "@babel/core": "^7.23.9",
+    "@babel/eslint-parser": "^7.23.10",
+    "@vue/cli-plugin-babel": "~5.0.8",
+    "@vue/cli-plugin-eslint": "~5.0.8",
+    "@vue/cli-plugin-unit-jest": "~5.0.8",
+    "@vue/cli-service": "~5.0.8",
+    "@vue/test-utils": "^1.3.6",
+    "@vue/vue2-jest": "^27.0.0",
+    "babel-jest": "^27.5.1",
     "eslint": "^7.32.0",
-    "eslint-plugin-vue": "^8.0.3",
-    "jest": "^27.0.5",
-    "standard": "^17.0.0",
-    "vue-template-compiler": "^2.6.14"
+    "eslint-plugin-vue": "^8.7.1",
+    "jest": "^27.5.1",
+    "vue-template-compiler": "^2.7.16"
   },
   "eslintConfig": {
     "root": true,
@@ -37,7 +36,6 @@
       "node": true
     },
     "extends": [
-      "./node_modules/standard/eslintrc.json",
       "plugin:vue/essential",
       "eslint:recommended"
     ],
