@@ -124,10 +124,14 @@ export default {
   width: 35px;
   height: 35px;
   margin: 0 3px;
+  filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.5));
+  transition: transform 0.3s;
+  cursor: pointer;
 }
 
+.share a:hover,
 .share .btn:hover {
-  transform: scale(1.1);
+  transform: scale(.9);
 }
 
 .rounded {

@@ -22,8 +22,10 @@
 
     <div v-if="intents && !pokemon.active">
       <div>
-        <input v-model="input" :placeholder="$t('question')" class="textInput" :class="{ 'error-shake': errorShake }"
-          readonly />
+        <input v-if="input" v-model="input" :placeholder="$t('question')" class="textInput"
+          :class="{ 'error-shake': errorShake }" readonly />
+        <p v-else class="textInput">{{ $t('question') }}</p>
+
         <div v-if="input &&
           input.length >= 2 &&
           pokedex.filter(
@@ -41,7 +43,7 @@
       </div>
 
       <section class="pokeballs">
-        <p>{{ $t("attempts") }}</p>
+        <p>{{ $t("attempts") }} = {{ intents }}</p>
         <div class="intents">
           <img v-for="item in intents" v-bind:key="item + 1000" src="./assets/pokeball.png" alt="" class="pokeball" />
           <img v-for="item in 5 - intents" v-bind:key="item + 2000" src="./assets/pokeball.png" alt=""
@@ -293,6 +295,8 @@ a {
   max-width: 80%;
   max-height: 120px;
   margin: 0 auto;
+  filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.5));
+  transition: all 0.3s;
 }
 
 .logo:hover {
@@ -362,6 +366,7 @@ a {
   padding: 12px;
   outline: none;
   appearance: none;
+  color: white;
   background: none;
   border: 0;
   font-size: 18px;
@@ -370,6 +375,7 @@ a {
 }
 
 .pokeballs {
+  font-size: 14px;
   text-align: center;
   margin: 15px auto 0;
 }
@@ -381,40 +387,20 @@ a {
 }
 
 .pokeball {
-  width: 40px;
-  position: relative;
-  transition: all .5s;
-  opacity: 0;
-  animation: top 2s ease-out forwards;
-}
-
-.pokeball:nth-of-type(1) {
-  transform: translateY(10px);
-}
-
-.pokeball:nth-of-type(2) {
-  transform: translateY(15px);
-}
-
-.pokeball:nth-of-type(3) {
-  transform: translateY(20px);
-}
-
-.pokeball:nth-of-type(4) {
-  transform: translateY(25px);
-}
-
-.pokeball:nth-of-type(5) {
-  transform: translateY(30px);
+  width: 35px;
+  animation: fadeIn 1s ease both;
 }
 
 .pokeball.disabled {
-  opacity: 0.3 !important;
+  opacity: 0.4 !important;
 }
 
-@keyframes top {
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+
   100% {
-    transform: translateY(0);
     opacity: 1;
   }
 }

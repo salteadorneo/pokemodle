@@ -87,6 +87,7 @@ export default {
   text-align: center;
   padding: 3px 0 0;
   transition: transform 0.5s;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
 }
 
 .help:hover {
