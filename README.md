@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="./LICENSE.md">
-    <img alt="Excalidraw is released under the MIT license." src="https://img.shields.io/badge/license-MIT-blue.svg"  />
+    <img alt="Released under the MIT license." src="https://img.shields.io/badge/license-MIT-blue.svg"  />
   </a>
   <a href="https://github.com/salteadorneo/pokemodle/issues">
     <img alt="PRs welcome!" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat"  />
