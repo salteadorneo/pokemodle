@@ -4,7 +4,7 @@
   <a href="./LICENSE.md">
     <img alt="Released under the MIT license." src="https://img.shields.io/badge/license-MIT-blue.svg"  />
   </a>
-  <a href="https://github.com/salteadorneo/pokemodle/issues">
+  <a href="../../issues">
     <img alt="PRs welcome!" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat"  />
   </a>
   <a href="https://twitter.com/salteadorneodev">
