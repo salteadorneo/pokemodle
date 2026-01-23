@@ -162,8 +162,6 @@
 </style>
 
 <script>
-import splitbee from '@splitbee/web'
-
 export default {
   props: {
     pokedex: Array,
@@ -182,7 +180,7 @@ export default {
   },
   watch: {
     hidePokedex() {
-      splitbee.track('ShowPokedex')
+      window.sa_event('ShowPokedex')
 
       if (this.win) {
         setTimeout(() => {
