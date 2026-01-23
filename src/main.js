@@ -1,10 +1,7 @@
 import Vue from 'vue'
 import VueI18n from 'vue-i18n'
 
-import splitbee from '@splitbee/web'
-
 import App from './App.vue'
-splitbee.init({ disableCookie: true })
 
 Vue.use(VueI18n)
 

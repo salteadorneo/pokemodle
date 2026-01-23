@@ -41,8 +41,6 @@
   </section>
 </template>
 <script>
-import splitbee from '@splitbee/web'
-
 import TwitterIcon from './icons/TwitterIcon.vue'
 import WhatsappIcon from './icons/WhatsappIcon.vue'
 import TelegramIcon from './icons/TelegramIcon.vue'
@@ -84,9 +82,7 @@ export default {
       return val.charAt(0).toUpperCase() + val.slice(1)
     },
     setEvent(e) {
-      splitbee.track('Share', {
-        mode: e
-      })
+      window.sa_event('Share', { mode: e })
     },
     clipboard() {
       if (navigator.canShare) {

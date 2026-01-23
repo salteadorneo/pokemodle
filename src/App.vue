@@ -61,8 +61,6 @@
 </template>
 
 <script>
-import splitbee from '@splitbee/web'
-
 import HelpModal from './components/HelpModal.vue'
 import Languages from './components/Languages.vue'
 import PokedexModal from './components/PokedexModal.vue'
@@ -168,7 +166,7 @@ export default {
         console.log(this.pokemon.name)
       }
 
-      splitbee.track('Pokedex', {
+      window.sa_event('Pokedex', {
         pokedex: this.pokedex.filter((p) => p.active).length
       })
     },
@@ -205,9 +203,7 @@ export default {
 
         this.randomPokemon()
 
-        splitbee.track('Catch', {
-          pokemon: this.pokemon.name
-        })
+        window.sa_event('Catch', { pokemon: this.pokemon.name })
       } else {
         this.intents--
 
@@ -218,9 +214,7 @@ export default {
         }
 
         if (!this.intents) {
-          splitbee.track('Flee', {
-            pokemon: this.pokemon.name
-          })
+          window.sa_event('Flee', { pokemon: this.pokemon.name })
         }
       }
       setKey('intents', this.intents)
